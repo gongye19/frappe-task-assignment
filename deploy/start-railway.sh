@@ -13,6 +13,11 @@ PORT="${PORT:-8080}"
 GUNICORN_WORKERS="${GUNICORN_WORKERS:-1}"
 GUNICORN_THREADS="${GUNICORN_THREADS:-4}"
 
+if [[ ! "${SITE_NAME}" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]]; then
+  echo "SITE_NAME must be a hostname, got: ${SITE_NAME}" >&2
+  exit 1
+fi
+
 required_variables=(
   MYSQLHOST
   MYSQLPORT
@@ -45,7 +50,17 @@ bench set-config -g redis_queue "${REDIS_URL}"
 bench set-config -g redis_socketio "${REDIS_URL}"
 bench set-config -gp socketio_port 9000
 
-if [[ ! -f "sites/${SITE_NAME}/site_config.json" ]]; then
+site_path="sites/${SITE_NAME}"
+install_marker="${site_path}/.task_assignment_installed"
+
+# A failed first install can leave a partial site on the persistent volume.
+# Only retry cleanup before the successful-install marker has ever been written.
+if [[ -f "${site_path}/site_config.json" && ! -f "${install_marker}" ]]; then
+  echo "Removing incomplete first-install state for ${SITE_NAME}..."
+  rm -rf -- "${site_path}"
+fi
+
+if [[ ! -f "${site_path}/site_config.json" ]]; then
   bench new-site "${SITE_NAME}" \
     --db-type mariadb \
     --db-host "${MYSQLHOST}" \
@@ -57,6 +72,7 @@ if [[ ! -f "sites/${SITE_NAME}/site_config.json" ]]; then
     --admin-password "${ADMIN_PASSWORD}" \
     --install-app task_assignment \
     --set-default
+  touch "${install_marker}"
 else
   bench --site "${SITE_NAME}" migrate
   bench use "${SITE_NAME}"
