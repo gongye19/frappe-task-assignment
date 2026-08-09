@@ -34,6 +34,9 @@ done
 
 mkdir -p sites
 ls -1 apps > sites/apps.txt
+if [[ ! -f sites/common_site_config.json ]]; then
+  echo '{}' > sites/common_site_config.json
+fi
 
 bench set-config -g db_host "${MYSQLHOST}"
 bench set-config -gp db_port "${MYSQLPORT}"
