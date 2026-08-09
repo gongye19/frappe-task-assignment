@@ -2,11 +2,72 @@
 	const roles = frappe.boot?.user?.roles || [];
 	if (!roles.some((role) => ["Teacher", "Student"].includes(role))) return;
 	const is_teacher = roles.some((role) => ["Teacher", "System Manager"].includes(role));
-	const current_language = (frappe.boot?.lang || frappe.boot?.user?.language || "en")
+	let current_language = (frappe.boot?.lang || frappe.boot?.user?.language || "en")
 		.toLocaleLowerCase()
 		.startsWith("zh")
 		? "zh"
 		: "en";
+	const language_messages = {
+		en: {},
+		zh: current_language === "zh" ? { ...(frappe._messages || {}) } : null,
+	};
+	const language_message_requests = {};
+	const client_chinese_labels = {
+		Save: "保存",
+	};
+	const preferred_english_labels = [
+		"Task Assignment",
+		"Task Center",
+		"Tasks",
+		"Projects",
+		"Students",
+		"School Task",
+		"School Project",
+		"School Student",
+		"Add School Task",
+		"Add School Project",
+		"Add School Student",
+		"Task Title",
+		"Project",
+		"Assigned Student",
+		"Due Date",
+		"Status",
+		"ID",
+		"Published",
+		"Instructions",
+		"Task Attachment",
+		"Student Submission",
+		"Submission Note",
+		"Submission File",
+		"Teacher Review",
+		"Teacher Feedback",
+		"Assigned By",
+		"Project Name",
+		"Project Description",
+		"Student Name",
+		"Student Account",
+		"Class",
+		"To Do",
+		"Submitted",
+		"Completed",
+		"Archived",
+		"Active",
+		"Enrolled",
+		"Disabled",
+		"Draft",
+		"Save",
+		"Publish",
+		"Actions",
+		"Add Tags",
+		"Archive",
+		"Delete",
+		"Search this list",
+		"Clear search",
+		"Last Updated On",
+		"Back to tasks",
+		"Back to projects",
+		"Back to students",
+	];
 
 	const task_list_url = "/desk/school-task/view/list";
 	const directory_list_roots = [
@@ -131,52 +192,186 @@
 		user_button.addEventListener("click", (event) => {
 			event.preventDefault();
 			event.stopPropagation();
-			menu.hidden = !menu.hidden;
-			user_button.setAttribute("aria-expanded", String(!menu.hidden));
+			const current_menu = sidebar_bottom.querySelector(".task-user-menu");
+			if (!current_menu) return;
+			current_menu.hidden = !current_menu.hidden;
+			user_button.setAttribute("aria-expanded", String(!current_menu.hidden));
 		});
 	};
-	const ensure_language_switcher = () => {
+	const load_language_messages = async (language) => {
+		if (language_messages[language]) return language_messages[language];
+		if (!language_message_requests[language]) {
+			language_message_requests[language] = Promise.resolve(
+				frappe.call({
+					method: "task_assignment.api.get_language_messages",
+					args: { language },
+				})
+			)
+				.then((response) => {
+					language_messages[language] = response.message || {};
+					return language_messages[language];
+				})
+				.finally(() => delete language_message_requests[language]);
+		}
+		return language_message_requests[language];
+	};
+	const get_language_dictionary = (language) => {
+		const chinese_messages = {
+			...(language_messages.zh || {}),
+			...client_chinese_labels,
+		};
+		if (language === "zh") return chinese_messages;
+		const english_messages = {};
+		Object.entries(chinese_messages).forEach(([english, chinese]) => {
+			if (!english_messages[chinese]) english_messages[chinese] = english;
+		});
+		preferred_english_labels.forEach((english) => {
+			const chinese = chinese_messages[english];
+			if (chinese) english_messages[chinese] = english;
+		});
+		return english_messages;
+	};
+	const translate_ui_value = (value, dictionary) => {
+		const trimmed = value?.trim();
+		if (!trimmed) return value;
+		let translated = dictionary[trimmed];
+		if (!translated) {
+			const count_label = trimmed.match(/^(.+?)(\s*·\s*\d+)$/);
+			if (count_label && dictionary[count_label[1]]) {
+				translated = `${dictionary[count_label[1]]}${count_label[2]}`;
+			}
+		}
+		if (!translated) {
+			const colon_label = trimmed.match(/^([^:：]+)([:：]\s*.*)$/);
+			if (colon_label && dictionary[colon_label[1]]) {
+				translated = `${dictionary[colon_label[1]]}${colon_label[2]}`;
+			}
+		}
+		if (!translated) {
+			const english_sort_label = trimmed.match(/^Click to sort by (.+)$/);
+			if (english_sort_label && dictionary[english_sort_label[1]]) {
+				translated = `点击按${dictionary[english_sort_label[1]]}排序`;
+			}
+		}
+		if (!translated) {
+			const chinese_sort_label = trimmed.match(/^点击按(.+)排序$/);
+			if (chinese_sort_label && dictionary[chinese_sort_label[1]]) {
+				translated = `Click to sort by ${dictionary[chinese_sort_label[1]]}`;
+			}
+		}
+		return translated ? value.replace(trimmed, translated) : value;
+	};
+	const translate_visible_ui = (language) => {
+		const dictionary = get_language_dictionary(language);
+		if (!Object.keys(dictionary).length) return;
+		const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+			acceptNode(node) {
+				if (!node.nodeValue?.trim()) return NodeFilter.FILTER_REJECT;
+				if (
+					node.parentElement?.closest(
+						"script, style, input, textarea, .task-language-toggle, .task-user-menu-name, .task-user-menu-email"
+					)
+				) {
+					return NodeFilter.FILTER_REJECT;
+				}
+				const list_column = node.parentElement?.closest(".list-row-col");
+				if (
+					list_column &&
+					!list_column.closest(".list-row-head") &&
+					!node.parentElement.closest(".indicator-pill")
+				) {
+					return NodeFilter.FILTER_REJECT;
+				}
+				return NodeFilter.FILTER_ACCEPT;
+			},
+		});
+		const nodes = [];
+		while (walker.nextNode()) nodes.push(walker.currentNode);
+		nodes.forEach((node) => {
+			node.nodeValue = translate_ui_value(node.nodeValue, dictionary);
+		});
+		document.querySelectorAll("button.primary-action[data-label]").forEach((button) => {
+			const label = decodeURIComponent(button.dataset.label || "");
+			const translated = translate_ui_value(label, dictionary);
+			if (translated === label) return;
+			button.dataset.label = translated;
+			const label_container = button.querySelector(":scope > span") || button;
+			label_container.textContent = translated;
+		});
+		document
+			.querySelectorAll("[placeholder], [aria-label], [title], [data-original-title]")
+			.forEach((element) => {
+				["placeholder", "aria-label", "title", "data-original-title"].forEach(
+					(attribute) => {
+						if (!element.hasAttribute(attribute)) return;
+						const value = element.getAttribute(attribute);
+						element.setAttribute(attribute, translate_ui_value(value, dictionary));
+					}
+				);
+			});
+	};
+	const apply_client_language = (language, messages) => {
+		current_language = language;
+		frappe._messages = language === "en" ? {} : messages || {};
+		frappe.boot.lang = language;
+		if (frappe.boot.user) frappe.boot.user.language = language;
+		document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+		document.cookie = `preferred_language=${language}; path=/; SameSite=Lax`;
+		document.querySelectorAll(".task-user-menu").forEach((menu) => menu.remove());
+		translate_visible_ui(language);
+		simplify_ui();
+	};
+	const switch_language = async (button) => {
+		if (button.disabled) return;
+		const previous_language = current_language;
+		const target_language = previous_language === "en" ? "zh" : "en";
+		button.disabled = true;
+		button.classList.add("is-switching");
+		try {
+			const messages = await load_language_messages(target_language);
+			apply_client_language(target_language, messages);
+			Promise.resolve(
+				frappe.call({
+					method: "task_assignment.api.set_language",
+					args: { language: target_language },
+				})
+			).catch(() => {
+				if (current_language !== target_language) return;
+				apply_client_language(previous_language, language_messages[previous_language]);
+				frappe.show_alert({
+					message: __("Unable to switch language. Please try again."),
+					indicator: "red",
+				});
+			});
+		} catch (error) {
+			apply_client_language(previous_language, language_messages[previous_language]);
+			frappe.show_alert({
+				message: __("Unable to switch language. Please try again."),
+				indicator: "red",
+			});
+		} finally {
+			button.disabled = false;
+			button.classList.remove("is-switching");
+			ensure_language_toggle();
+		}
+	};
+	const ensure_language_toggle = () => {
 		const sidebar_bottom = document.querySelector(".body-sidebar-bottom");
 		const user_button = sidebar_bottom?.querySelector(".sidebar-user-button");
-		if (!sidebar_bottom || !user_button || sidebar_bottom.querySelector(".task-language-switcher")) {
-			return;
-		}
+		if (!sidebar_bottom || !user_button) return;
 
-		const switcher = document.createElement("div");
-		switcher.className = "task-language-switcher";
-		switcher.setAttribute("role", "group");
-		switcher.setAttribute("aria-label", __("Language"));
-
-		[["zh", "中文"], ["en", "EN"]].forEach(([language, label]) => {
-			const button = document.createElement("button");
+		sidebar_bottom.querySelectorAll(".task-language-switcher").forEach((item) => item.remove());
+		let button = sidebar_bottom.querySelector(".task-language-toggle");
+		if (!button) {
+			button = document.createElement("button");
 			button.type = "button";
-			button.textContent = label;
-			button.classList.toggle("active", language === current_language);
-			button.setAttribute("aria-pressed", String(language === current_language));
-			button.addEventListener("click", async () => {
-				if (language === current_language) return;
-				switcher.querySelectorAll("button").forEach((item) => {
-					item.disabled = true;
-				});
-				try {
-					await frappe.call({
-						method: "task_assignment.api.set_language",
-						args: { language },
-						freeze: true,
-						freeze_message: __("Switching language…"),
-					});
-					window.location.reload();
-				} catch (error) {
-					switcher.querySelectorAll("button").forEach((item) => {
-						item.disabled = false;
-					});
-					throw error;
-				}
-			});
-			switcher.append(button);
-		});
-
-		sidebar_bottom.prepend(switcher);
+			button.className = "task-language-toggle";
+			button.addEventListener("click", () => switch_language(button));
+			sidebar_bottom.insertBefore(button, user_button.closest(".nav-item"));
+		}
+		button.textContent = current_language === "en" ? "中文" : "English";
+		button.setAttribute("aria-label", __("Switch language"));
+		button.title = __("Switch language");
 	};
 	const keep_only_task_list_actions = () => {
 		const allowed = new Set([
@@ -196,26 +391,11 @@
 				if (!allowed.has(label)) item.closest("li")?.remove();
 			});
 	};
-	const hide_teacher_only_navigation = () => {
-		if (is_teacher) return;
-		const sidebar = document.querySelector(".body-sidebar-top .sidebar-items");
-		sidebar?.querySelectorAll(":scope > .sidebar-item-container").forEach((item) => {
-			if (!item.querySelector('a[href^="/desk/school-task"]')) item.remove();
-		});
-		document
-			.querySelectorAll(
-				'a[href^="/desk/task-center"], a[href^="/desk/school-project"], a[href^="/desk/school-student"]'
-			)
-			.forEach((link) => {
-				const item = link.closest(
-					".standard-sidebar-item, .sidebar-item-container, .shortcut-widget-box"
-				);
-				(item || link).remove();
-			});
-	};
+	let unread_count = 0;
 	const apply_unread_tasks = (payload = {}) => {
 		const unread = new Set(payload.names || []);
 		const count = Number(payload.count || 0);
+		unread_count = count;
 		document
 			.querySelectorAll('.body-sidebar-top a[href^="/desk/school-task"]')
 			.forEach((link) => {
@@ -264,75 +444,165 @@
 		return unread_request;
 	};
 	window.task_assignment_refresh_unread = refresh_unread_tasks;
-	const ensure_teacher_navigation = () => {
-		if (!is_teacher) return;
-		const container = document.querySelector(".body-sidebar-top .sidebar-items");
-		const seed = container?.querySelector(":scope > .sidebar-item-container");
-		if (!container || !seed) return;
-
-		const links = [
-			["/desk/task-center", __("Task Center")],
-			["/desk/school-task", __("Tasks")],
-			["/desk/school-project", __("Projects")],
-			["/desk/school-student", __("Students")],
+	const navigation_items = () => {
+		const items = [
+			{ path: "/desk/school-task", label: __("Tasks"), icon: "list-checks" },
 		];
-		links.forEach(([path, label]) => {
-			if (container.querySelector(`a[href="${path}"]`)) return;
-			const item = seed.cloneNode(true);
-			item.setAttribute("item-name", label);
-			item.setAttribute("data-id", label);
-			item.setAttribute("data-original-title", label);
-			item.querySelector(".standard-sidebar-item")?.classList.remove("active-sidebar");
+		if (!is_teacher) return items;
+		return [
+			{ path: "/desk/task-center", label: __("Task Center"), icon: "dashboard" },
+			...items,
+			{ path: "/desk/school-project", label: __("Projects"), icon: "folder" },
+			{ path: "/desk/school-student", label: __("Students"), icon: "users" },
+		];
+	};
+	const is_active_navigation_path = (path) => {
+		const current_path = window.location.pathname.replace(/\/+$/, "");
+		return current_path === path || current_path.startsWith(`${path}/`);
+	};
+	const create_navigation_item = ({ path, label, icon }) => {
+		const item = document.createElement("div");
+		item.className = "sidebar-item-container task-managed-nav-item";
+		item.setAttribute("item-name", label);
+		item.setAttribute("data-id", path);
+		item.setAttribute("title", label);
+
+		const standard = document.createElement("div");
+		standard.className = "standard-sidebar-item";
+		standard.classList.toggle("active-sidebar", is_active_navigation_path(path));
+
+		const link = document.createElement("a");
+		link.className = "item-anchor";
+		link.href = path;
+		if (is_active_navigation_path(path)) link.setAttribute("aria-current", "page");
+
+		const icon_container = document.createElement("span");
+		icon_container.className = "sidebar-item-icon text-ink-gray-7";
+		icon_container.setAttribute("item-icon", icon);
+		icon_container.innerHTML = frappe.utils.icon(
+			icon,
+			"sm",
+			"",
+			"",
+			"text-ink-gray-7 current-color",
+			true
+		);
+
+		const text = document.createElement("span");
+		text.className = "sidebar-item-label";
+		text.textContent = label;
+		link.append(icon_container, text);
+
+		if (path === "/desk/school-task") {
+			link.classList.add("task-nav-link");
+			const badge = document.createElement("span");
+			badge.className = "task-unread-badge";
+			badge.textContent = unread_count > 99 ? "99+" : String(unread_count);
+			badge.hidden = unread_count === 0;
+			link.append(badge);
+		}
+
+		const control = document.createElement("div");
+		control.className = "sidebar-item-control";
+		link.append(control);
+		standard.append(link);
+		item.append(standard);
+		return item;
+	};
+	const ensure_stable_navigation = () => {
+		const container = document.querySelector(".body-sidebar-top .sidebar-items");
+		if (!container) return;
+		const items = navigation_items();
+		const signature = JSON.stringify({
+			language: current_language,
+			role: is_teacher ? "teacher" : "student",
+			paths: items.map((item) => item.path),
+		});
+		const managed_items = container.querySelectorAll(":scope > .task-managed-nav-item");
+		if (
+			container.dataset.taskNavigationSignature !== signature ||
+			managed_items.length !== items.length ||
+			managed_items.length !== container.children.length
+		) {
+			container.replaceChildren(...items.map(create_navigation_item));
+			container.dataset.taskNavigationSignature = signature;
+			return;
+		}
+
+		managed_items.forEach((item) => {
 			const link = item.querySelector("a");
-			link.setAttribute("href", path);
-			link.removeAttribute("title");
-			link.classList.remove("task-nav-link");
-			item.querySelector(".sidebar-item-label").textContent = label;
-			item.querySelector(".task-unread-badge")?.remove();
-			const edit = item.querySelector(".edit-menu");
-			if (edit) edit.dataset.menu = label;
-			container.append(item);
+			const active = is_active_navigation_path(link.getAttribute("href"));
+			item.querySelector(".standard-sidebar-item")?.classList.toggle("active-sidebar", active);
+			if (active) link.setAttribute("aria-current", "page");
+			else link.removeAttribute("aria-current");
 		});
 	};
-	const update_navigation_labels = () => {
-		const container = document.querySelector(".body-sidebar-top .sidebar-items");
-		if (!container) return;
-		const labels = [
-			["/desk/task-center", __("Task Center")],
-			["/desk/school-task", __("Tasks")],
-			["/desk/school-project", __("Projects")],
-			["/desk/school-student", __("Students")],
-		];
-		labels.forEach(([path, label]) => {
-			const link = container.querySelector(`a[href="${path}"]`);
-			const item = link?.closest(".sidebar-item-container");
-			if (!link || !item) return;
-			item.setAttribute("item-name", label);
-			item.setAttribute("data-id", label);
-			item.setAttribute("data-original-title", label);
-			const label_element = item.querySelector(".sidebar-item-label");
-			if (label_element?.textContent !== label) label_element.textContent = label;
-		});
+	const ensure_stable_sidebar_header = () => {
+		const header = document.querySelector(".sidebar-header");
+		if (!header) return;
+		header.classList.add("task-stable-sidebar-header");
+		const title = header.querySelector(".header-title");
+		const subtitle = header.querySelector(".header-subtitle");
+		const logo = header.querySelector(".header-logo");
+		const app_title = __("Task Assignment");
+		if (title?.textContent.trim() !== app_title) title.textContent = app_title;
+		if (subtitle?.textContent.trim() !== frappe.session.user) {
+			subtitle.textContent = frappe.session.user;
+		}
+		if (logo && !logo.querySelector(".task-stable-app-logo")) {
+			logo.replaceChildren();
+			const image = document.createElement("img");
+			image.className = "task-stable-app-logo";
+			image.src = "/assets/task_assignment/task.svg";
+			image.alt = "";
+			logo.append(image);
+		}
 	};
-	const order_navigation = () => {
-		if (!is_teacher) return;
-		const container = document.querySelector(".body-sidebar-top .sidebar-items");
-		if (!container) return;
+	const form_back_routes = {
+		"School Task": { path: "/desk/school-task/view/list", label: "Back to tasks" },
+		"School Project": {
+			path: "/desk/school-project/view/list",
+			label: "Back to projects",
+		},
+		"School Student": {
+			path: "/desk/school-student/view/list",
+			label: "Back to students",
+		},
+	};
+	const ensure_form_back_button = () => {
+		const route = frappe.get_route?.() || [];
+		const config = route[0] === "Form" ? form_back_routes[route[1]] : null;
+		const active_head = [...document.querySelectorAll(".page-head")].find(
+			(head) => head.offsetParent !== null
+		);
+		document.querySelectorAll(".task-back-button").forEach((button) => {
+			if (!config || !active_head?.contains(button)) button.remove();
+		});
+		if (!config || !active_head) return;
 
-		const paths = [
-			"/desk/task-center",
-			"/desk/school-task",
-			"/desk/school-project",
-			"/desk/school-student",
-		];
-		const items = [...container.querySelectorAll(":scope > .sidebar-item-container")];
-		const ordered = paths
-			.map((path) => items.find((item) => item.querySelector(`a[href=\"${path}\"]`)))
-			.filter(Boolean);
-		const current = items.filter((item) => ordered.includes(item));
-		if (ordered.every((item, index) => current[index] === item)) return;
-
-		[...ordered].reverse().forEach((item) => container.prepend(item));
+		const page_title = active_head.querySelector(".page-title");
+		const title_area = page_title?.querySelector(".title-area");
+		if (!page_title || !title_area) return;
+		let button = page_title.querySelector(".task-back-button");
+		if (!button) {
+			button = document.createElement("button");
+			button.type = "button";
+			button.className = "btn btn-default btn-sm task-back-button";
+			button.addEventListener("click", () => {
+				const destination = button.dataset.destination;
+				if (destination) frappe.set_route(destination);
+			});
+			const icon = document.createElement("span");
+			icon.className = "task-back-button-icon";
+			icon.innerHTML = frappe.utils.icon("arrow-left", "sm");
+			const label = document.createElement("span");
+			label.className = "task-back-button-label";
+			button.append(icon, label);
+			page_title.insertBefore(button, title_area);
+		}
+		button.dataset.destination = config.path;
+		button.querySelector(".task-back-button-label").textContent = __(config.label);
+		button.setAttribute("aria-label", __(config.label));
 	};
 	const clear_search_highlights = (root) => {
 		root.querySelectorAll("mark.task-search-highlight").forEach((mark) => {
@@ -470,13 +740,15 @@
 		);
 		keep_only_logout();
 		keep_only_task_list_actions();
-		hide_teacher_only_navigation();
-		ensure_teacher_navigation();
-		update_navigation_labels();
-		order_navigation();
-		ensure_language_switcher();
+		ensure_stable_sidebar_header();
+		ensure_stable_navigation();
+		ensure_language_toggle();
 		ensure_user_menu();
+		ensure_form_back_button();
 		if (is_directory_list) ensure_list_search();
+		// Frappe can recreate native controls after a route or form refresh.
+		// Keep those controls in the selected language without reloading the page.
+		translate_visible_ui(current_language);
 		document.querySelector(".body-sidebar-container")?.classList.add("expanded");
 	};
 	document.addEventListener("click", (event) => {
@@ -497,10 +769,23 @@
 			?.setAttribute("aria-expanded", "false");
 	});
 
-	const observer = new MutationObserver(simplify_ui);
+	let simplify_scheduled = false;
+	const schedule_simplify_ui = () => {
+		if (simplify_scheduled) return;
+		simplify_scheduled = true;
+		window.requestAnimationFrame(() => {
+			simplify_scheduled = false;
+			simplify_ui();
+		});
+	};
+	const observer = new MutationObserver(schedule_simplify_ui);
 	observer.observe(document.documentElement, { childList: true, subtree: true });
 	simplify_ui();
 	setTimeout(refresh_unread_tasks, 0);
+	setTimeout(
+		() => load_language_messages(current_language === "en" ? "zh" : "en").catch(() => {}),
+		0
+	);
 
 	$(document).on("app_ready", () => {
 		frappe.router.on("change", () => {

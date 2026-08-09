@@ -30,7 +30,7 @@ def setup_demo():
 	frappe.db.set_single_value("System Settings", "login_with_email_link", 0)
 	frappe.db.set_single_value("Website Settings", "disable_signup", 1)
 	frappe.db.set_value(
-		"User", "Administrator", {"language": "zh", "default_app": "task_assignment"}
+		"User", "Administrator", {"language": "en", "default_app": "task_assignment"}
 	)
 
 	if not frappe.db.exists("User", "teacher@example.com"):
@@ -38,7 +38,7 @@ def setup_demo():
 			"doctype": "User",
 			"email": "teacher@example.com",
 			"first_name": "陈老师",
-			"language": "zh",
+			"language": "en",
 			"send_welcome_email": 0,
 			"user_type": "System User",
 		}
@@ -54,7 +54,7 @@ def setup_demo():
 			"doctype": "User",
 			"email": "student@example.com",
 			"first_name": "林小满",
-			"language": "zh",
+			"language": "en",
 			"send_welcome_email": 0,
 			"user_type": "System User",
 		}

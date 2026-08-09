@@ -7,3 +7,4 @@
 task_assignment.patches.v1_0.normalize_task_statuses
 task_assignment.patches.v1_1.use_language_neutral_statuses
 task_assignment.patches.v1_2.normalize_workspace_text
+task_assignment.patches.v1_3.use_english_as_demo_default

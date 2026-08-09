@@ -225,43 +225,91 @@ html.task-only-user .body-sidebar-bottom {
 	position: relative;
 }
 
-html.task-only-user .task-language-switcher {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 3px;
-	margin: 0 8px 6px;
-	padding: 3px;
+html.task-only-user .task-language-toggle,
+.login-language-toggle {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 34px;
+	padding: 5px 9px;
 	border: 1px solid var(--border-color);
 	border-radius: 8px;
+	background: var(--card-bg);
+	color: var(--text-color);
+	font-size: 12px;
+	font-weight: 550;
+	transition: background 120ms ease, border-color 120ms ease;
+}
+
+html.task-only-user .task-language-toggle {
+	width: calc(100% - 16px);
+	margin: 0 8px 6px;
+}
+
+html.task-only-user .task-language-toggle::before,
+.login-language-toggle::before {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 27px;
+	height: 22px;
+	border-radius: 5px;
+	background: var(--subtle-fg);
+	color: var(--text-muted);
+	content: "文/A";
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+html.task-only-user .task-language-toggle:hover,
+.login-language-toggle:hover {
+	border-color: var(--gray-400);
 	background: var(--subtle-fg);
 }
 
-html.task-only-user .task-language-switcher button {
-	min-height: 28px;
-	padding: 3px 8px;
-	border: 0;
-	border-radius: 6px;
-	background: transparent;
-	color: var(--text-muted);
-	font-size: 12px;
-	font-weight: 500;
-}
-
-html.task-only-user .task-language-switcher button.active {
-	background: var(--card-bg);
-	box-shadow: var(--shadow-xs);
-	color: var(--text-color);
-	font-weight: 600;
-}
-
-html.task-only-user .task-language-switcher button:focus-visible {
+html.task-only-user .task-language-toggle:focus-visible,
+.login-language-toggle:focus-visible {
 	outline: 2px solid var(--blue-400);
 	outline-offset: 1px;
 }
 
-html.task-only-user .task-language-switcher button:disabled {
+html.task-only-user .task-language-toggle:disabled {
 	cursor: wait;
 	opacity: 0.65;
+}
+
+html.task-only-user .task-stable-app-logo {
+	display: block;
+	width: 22px;
+	height: 22px;
+	object-fit: contain;
+}
+
+html.task-only-user .task-back-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	flex: 0 0 auto;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+html.task-only-user .task-back-button-icon {
+	display: inline-flex;
+}
+
+@media (max-width: 768px) {
+	html.task-only-user .task-back-button-label {
+		display: none;
+	}
+
+	html.task-only-user .task-back-button {
+		width: 30px;
+		padding-right: 6px;
+		padding-left: 6px;
+		justify-content: center;
+	}
 }
 
 html.task-only-user .sidebar-user-button {
@@ -357,37 +405,7 @@ html.task-only-user .sidebar-header .drop-icon {
 	display: none !important;
 }
 
-.login-language-switcher {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 3px;
-	width: 132px;
+.login-language-toggle {
+	width: auto;
 	margin: -4px 0 18px auto;
-	padding: 3px;
-	border: 1px solid var(--border-color);
-	border-radius: 8px;
-	background: var(--subtle-fg);
-}
-
-.login-language-switcher button {
-	min-height: 28px;
-	padding: 3px 10px;
-	border: 0;
-	border-radius: 6px;
-	background: transparent;
-	color: var(--text-muted);
-	font-size: 12px;
-	font-weight: 500;
-}
-
-.login-language-switcher button.active {
-	background: var(--card-bg);
-	box-shadow: var(--shadow-xs);
-	color: var(--text-color);
-	font-weight: 600;
-}
-
-.login-language-switcher button:focus-visible {
-	outline: 2px solid var(--blue-400);
-	outline-offset: 1px;
 }
