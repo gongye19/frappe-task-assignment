@@ -46,6 +46,17 @@ bench --site your-site set-config task_assignment_student_password 'choose-anoth
 
 任务、项目和学生状态在数据库中使用稳定的英文值，通过 Frappe 翻译表显示为中文。这使筛选、API 和后续集成不依赖当前界面语言。
 
+## Railway 演示部署
+
+仓库内的 `Dockerfile` 和 `railway.toml` 用于单容器演示部署。需要：
+
+- MariaDB 10.11 服务和挂载到 `/var/lib/mysql` 的持久化卷；
+- Redis 服务；
+- 应用服务挂载到 `/home/frappe/frappe-bench/sites` 的持久化卷；
+- 数据库、Redis、`ADMIN_PASSWORD` 以及两个演示账号密码环境变量。
+
+Railway 默认的 MySQL 服务不适用于这个 Frappe v16 镜像，请使用 MariaDB 10.6 或更高版本。生产环境建议采用 Frappe 官方的多进程部署结构；仓库中的单容器方案主要用于产品演示。
+
 ## License
 
 MIT

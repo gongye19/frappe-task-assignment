@@ -126,4 +126,11 @@ pids+=("$!")
 nginx -g 'daemon off;' &
 pids+=("$!")
 
+# During a rolling deploy the retiring instance can briefly repopulate the
+# shared asset cache. Refresh once more after Railway has switched traffic.
+(
+  sleep 20
+  bench --site "${SITE_NAME}" clear-cache
+) &
+
 wait -n "${pids[@]}"
