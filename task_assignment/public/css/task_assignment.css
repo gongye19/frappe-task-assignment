@@ -233,14 +233,14 @@ html.task-only-user .task-unread-badge {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 20px;
-	height: 20px;
+	min-width: 16px;
+	height: 16px;
 	margin-left: auto;
-	padding: 0 6px;
+	padding: 0 4px;
 	border-radius: 999px;
 	background: var(--blue-500);
 	color: white;
-	font-size: 11px;
+	font-size: 9px;
 	font-weight: 700;
 	line-height: 1;
 }
@@ -267,7 +267,6 @@ html.task-only-user .task-language-toggle {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
 	height: 28px;
 	min-height: 28px;
 	margin-right: 8px;
@@ -281,7 +280,6 @@ html.task-only-user .task-language-toggle {
 .login-language-toggle {
 	display: flex;
 	align-items: center;
-	gap: 8px;
 	min-height: 34px;
 	padding: 5px 9px;
 	border: 1px solid var(--border-color);
@@ -291,27 +289,6 @@ html.task-only-user .task-language-toggle {
 	font-size: 12px;
 	font-weight: 550;
 	transition: background 120ms ease, border-color 120ms ease;
-}
-
-html.task-only-user .task-language-toggle::before,
-.login-language-toggle::before {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 27px;
-	height: 22px;
-	border-radius: 5px;
-	background: var(--subtle-fg);
-	color: var(--text-muted);
-	content: "文/A";
-	font-size: 9px;
-	font-weight: 700;
-	letter-spacing: -0.02em;
-}
-
-html.task-only-user .task-language-toggle::before {
-	width: 24px;
-	height: 18px;
 }
 
 html.task-only-user .task-language-toggle:hover,
@@ -327,11 +304,6 @@ html.task-only-user .task-language-toggle:focus-visible,
 .login-language-toggle:focus-visible {
 	outline: 2px solid var(--blue-400);
 	outline-offset: 1px;
-}
-
-html.task-only-user .task-language-toggle:disabled {
-	cursor: wait;
-	opacity: 0.65;
 }
 
 html.task-only-user .task-stable-app-logo {

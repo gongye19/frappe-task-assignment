@@ -13,8 +13,21 @@
 	};
 	const language_message_requests = {};
 	const client_chinese_labels = {
+		Task: "任务",
+		"Add Task": "添加任务",
 		Save: "保存",
 	};
+	const client_english_labels = {
+		"School Task": "Task",
+		"School Tasks": "Tasks",
+		"Add School Task": "Add Task",
+		"任务": "Task",
+		"添加任务": "Add Task",
+	};
+	let desired_language = current_language;
+	let language_switch_sequence = 0;
+	let language_persist_timer = null;
+	let language_persist_chain = Promise.resolve();
 	const preferred_english_labels = [
 		"Task Assignment",
 		"Task Center",
@@ -229,7 +242,7 @@
 			const chinese = chinese_messages[english];
 			if (chinese) english_messages[chinese] = english;
 		});
-		return english_messages;
+		return { ...english_messages, ...client_english_labels };
 	};
 	const translate_ui_value = (value, dictionary) => {
 		const trimmed = value?.trim();
@@ -312,6 +325,7 @@
 	};
 	const apply_client_language = (language, messages) => {
 		current_language = language;
+		desired_language = language;
 		frappe._messages = language === "en" ? {} : messages || {};
 		frappe.boot.lang = language;
 		if (frappe.boot.user) frappe.boot.user.language = language;
@@ -321,38 +335,51 @@
 		translate_visible_ui(language);
 		simplify_ui();
 	};
+	const schedule_language_persist = () => {
+		window.clearTimeout(language_persist_timer);
+		language_persist_timer = window.setTimeout(() => {
+			const language_to_save = current_language;
+			language_persist_chain = language_persist_chain
+				.catch(() => {})
+				.then(() =>
+					frappe.call({
+						method: "task_assignment.api.set_language",
+						args: { language: language_to_save },
+					})
+				)
+				.catch(() => {
+					if (current_language !== language_to_save) return;
+					frappe.show_alert({
+						message: __("Unable to switch language. Please try again."),
+						indicator: "red",
+					});
+				});
+		}, 500);
+	};
 	const switch_language = async (button) => {
-		if (button.disabled) return;
-		const previous_language = current_language;
-		const target_language = previous_language === "en" ? "zh" : "en";
-		button.disabled = true;
+		desired_language = desired_language === "en" ? "zh" : "en";
+		const target_language = desired_language;
+		const switch_sequence = ++language_switch_sequence;
 		button.classList.add("is-switching");
+		button.setAttribute("aria-busy", "true");
 		try {
 			const messages = await load_language_messages(target_language);
+			if (switch_sequence !== language_switch_sequence) return;
 			apply_client_language(target_language, messages);
-			Promise.resolve(
-				frappe.call({
-					method: "task_assignment.api.set_language",
-					args: { language: target_language },
-				})
-			).catch(() => {
-				if (current_language !== target_language) return;
-				apply_client_language(previous_language, language_messages[previous_language]);
-				frappe.show_alert({
-					message: __("Unable to switch language. Please try again."),
-					indicator: "red",
-				});
-			});
+			schedule_language_persist();
 		} catch (error) {
-			apply_client_language(previous_language, language_messages[previous_language]);
+			if (switch_sequence !== language_switch_sequence) return;
+			desired_language = current_language;
 			frappe.show_alert({
 				message: __("Unable to switch language. Please try again."),
 				indicator: "red",
 			});
 		} finally {
-			button.disabled = false;
-			button.classList.remove("is-switching");
-			ensure_language_toggle();
+			if (switch_sequence === language_switch_sequence) {
+				button.classList.remove("is-switching");
+				button.removeAttribute("aria-busy");
+				ensure_language_toggle();
+			}
 		}
 	};
 	const ensure_language_toggle = () => {
