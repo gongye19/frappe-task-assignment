@@ -1,0 +1,195 @@
+{
+ "actions": [],
+ "autoname": "format:TASK-{#####}",
+ "creation": "2026-08-08 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "task_section",
+  "task_title",
+  "project",
+  "assigned_to",
+  "column_break_task",
+  "due_date",
+  "status",
+  "is_published",
+  "description",
+  "task_attachment",
+  "submission_section",
+  "submission_note",
+  "submission_file",
+  "review_section",
+  "teacher_feedback",
+  "assigned_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "task_section",
+   "fieldtype": "Section Break",
+   "label": "Task Details"
+  },
+  {
+   "fieldname": "task_title",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Task Title",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "School Project",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assigned Student",
+   "options": "School Student",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "column_break_task",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date",
+   "permlevel": 1
+  },
+  {
+   "default": "To Do",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "To Do\nSubmitted\nCompleted\nArchived",
+   "permlevel": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_published",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Published",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Instructions",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "task_attachment",
+   "fieldtype": "Attach",
+   "label": "Task Attachment",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "submission_section",
+   "fieldtype": "Section Break",
+   "label": "Student Submission"
+  },
+  {
+   "fieldname": "submission_note",
+   "fieldtype": "Small Text",
+   "label": "Submission Note"
+  },
+  {
+   "fieldname": "submission_file",
+   "fieldtype": "Attach",
+   "label": "Submission File"
+  },
+  {
+   "fieldname": "review_section",
+   "fieldtype": "Section Break",
+   "label": "Teacher Review"
+  },
+  {
+   "fieldname": "teacher_feedback",
+   "fieldtype": "Small Text",
+   "label": "Teacher Feedback",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "assigned_by",
+   "fieldtype": "Link",
+   "label": "Assigned By",
+   "options": "User",
+   "permlevel": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "hide_toolbar": 1,
+ "links": [],
+ "modified": "2026-08-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Task Assignment",
+ "name": "School Task",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Teacher",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "Teacher",
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "role": "Student",
+   "write": 1
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "Student"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "search_fields": "task_title,project,assigned_to,status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "task_title",
+ "track_changes": 1,
+ "track_seen": 1
+}

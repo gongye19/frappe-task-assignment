@@ -1,0 +1,393 @@
+html.task-only-user .navbar-breadcrumbs > li:first-child,
+html.task-only-user .navbar-search-bar,
+html.task-only-user .sidebar-notification,
+html.task-only-user .dropdown-notifications,
+html.task-only-user .onboarding-sidebar,
+html.task-only-user .promotional-banners,
+html.task-only-user .page-actions .custom-actions,
+html.task-only-user .page-actions .page-icon-group,
+html.task-only-user .page-actions .menu-more-button {
+	display: none !important;
+}
+
+html.task-only-user .page-actions .custom-actions:has(.task-publish-button),
+html.task-only-user .page-actions .custom-actions:has(.task-action-button) {
+	display: flex !important;
+}
+
+html.task-only-user .list-paging-area .level-left {
+	display: none !important;
+}
+
+html.task-only-user .compact-list-toolbar .standard-filter-section > :not(.task-status-filter) {
+	display: none !important;
+}
+
+html.task-only-user .task-status-filter {
+	position: relative;
+	display: flex;
+	margin-right: 8px;
+}
+
+html.task-only-user .task-status-filter-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	min-width: 92px;
+	justify-content: space-between;
+}
+
+html.task-only-user .task-status-filter-caret {
+	display: inline-flex;
+	color: var(--text-muted);
+}
+
+html.task-only-user .task-status-filter-menu {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	z-index: 1050;
+	min-width: 150px;
+	padding: 6px;
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 9px;
+	box-shadow: var(--shadow-md);
+}
+
+html.task-only-user .task-status-filter-menu[hidden] {
+	display: none !important;
+}
+
+html.task-only-user .task-status-filter-option {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	min-height: 34px;
+	margin: 0;
+	padding: 6px 9px;
+	border-radius: 7px;
+	color: var(--text-color);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+html.task-only-user .task-status-filter-option:hover {
+	background: var(--subtle-fg);
+}
+
+html.task-only-user .task-status-filter-option input {
+	margin: 0;
+}
+
+html.task-only-user .frappe-list .list-row-head > .level-right,
+html.task-only-user .frappe-list .list-row > .level-right,
+html.task-only-user .frappe-list .list-count,
+html.task-only-user .frappe-list .list-liked-by-me,
+html.task-only-user .frappe-list .comment-count,
+html.task-only-user .frappe-list .list-row-like {
+	display: none !important;
+}
+
+html.task-only-user .list-view .filter-section .filter-selector {
+	display: none !important;
+}
+
+html.task-only-user .task-list-search {
+	display: flex;
+	align-items: center;
+	width: 260px;
+	height: 30px;
+	margin-right: 8px;
+	padding: 0 8px;
+	background: var(--control-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+html.task-only-user .task-list-search:focus-within {
+	border-color: var(--blue-400);
+	box-shadow: 0 0 0 2px var(--blue-100);
+}
+
+html.task-only-user .task-list-search-icon {
+	display: inline-flex;
+	margin-right: 6px;
+	color: var(--text-muted);
+}
+
+html.task-only-user .task-list-search input {
+	min-width: 0;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: var(--text-color);
+	font-size: 13px;
+}
+
+html.task-only-user .task-list-search input::-webkit-search-cancel-button {
+	display: none;
+}
+
+html.task-only-user .task-list-search-clear {
+	padding: 0 2px;
+	border: 0;
+	background: transparent;
+	color: var(--text-muted);
+	font-size: 20px;
+	line-height: 1;
+}
+
+html.task-only-user .task-list-search-clear[hidden] {
+	display: none !important;
+}
+
+html.task-only-user mark.task-search-highlight {
+	padding: 0 2px;
+	border-radius: 3px;
+	background: var(--yellow-100);
+	color: inherit;
+}
+
+html.task-only-user .task-search-empty {
+	padding: 48px 16px;
+	color: var(--text-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
+html.task-only-user .task-search-empty[hidden] {
+	display: none !important;
+}
+
+@media (max-width: 768px) {
+	html.task-only-user .task-list-search {
+		width: min(220px, 58vw);
+	}
+}
+
+html.task-only-user.school-task-list-page .frappe-list .list-row-head > .level-left,
+html.task-only-user.school-task-list-page .frappe-list .list-row > .level-left {
+	width: 100% !important;
+	min-width: 0;
+	flex: 1 1 100% !important;
+}
+
+html.task-only-user.school-task-list-page .frappe-list .list-row-col:not(.tag-col) {
+	width: 0 !important;
+	min-width: 0 !important;
+	flex: 1 1 0 !important;
+}
+
+html.task-only-user.school-task-list-page .frappe-list .task-unread-row .list-row > .level-left {
+	font-weight: 650;
+}
+
+html.task-only-user .task-nav-link {
+	display: flex !important;
+	align-items: center;
+}
+
+html.task-only-user .task-unread-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 20px;
+	margin-left: auto;
+	padding: 0 6px;
+	border-radius: 999px;
+	background: var(--blue-500);
+	color: white;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+html.task-only-user .task-unread-badge[hidden] {
+	display: none !important;
+}
+
+html.task-only-user a[href^="/desk/user/"] {
+	pointer-events: none;
+	color: inherit;
+	text-decoration: none;
+}
+
+html.task-only-user .sidebar-header {
+	cursor: default;
+}
+
+html.task-only-user .body-sidebar-bottom {
+	position: relative;
+}
+
+html.task-only-user .task-language-switcher {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 3px;
+	margin: 0 8px 6px;
+	padding: 3px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background: var(--subtle-fg);
+}
+
+html.task-only-user .task-language-switcher button {
+	min-height: 28px;
+	padding: 3px 8px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-muted);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+html.task-only-user .task-language-switcher button.active {
+	background: var(--card-bg);
+	box-shadow: var(--shadow-xs);
+	color: var(--text-color);
+	font-weight: 600;
+}
+
+html.task-only-user .task-language-switcher button:focus-visible {
+	outline: 2px solid var(--blue-400);
+	outline-offset: 1px;
+}
+
+html.task-only-user .task-language-switcher button:disabled {
+	cursor: wait;
+	opacity: 0.65;
+}
+
+html.task-only-user .sidebar-user-button {
+	cursor: pointer;
+	padding: 6px 8px;
+	border-radius: 8px;
+}
+
+html.task-only-user .sidebar-user-button:hover,
+html.task-only-user .sidebar-user-button:focus-visible {
+	background: var(--subtle-fg);
+}
+
+html.task-only-user .sidebar-user-button .avatar-name-email {
+	display: block !important;
+}
+
+html.task-only-user .task-user-menu {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 96px;
+	z-index: 1100;
+	padding: 14px;
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	box-shadow: var(--shadow-md);
+}
+
+html.task-only-user .task-user-menu[hidden] {
+	display: none !important;
+}
+
+html.task-only-user .task-user-menu-heading {
+	margin-bottom: 8px;
+	color: var(--text-muted);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+}
+
+html.task-only-user .task-user-menu-name {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--text-color);
+}
+
+html.task-only-user .task-user-menu-email {
+	margin-top: 2px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+html.task-only-user .task-user-role {
+	display: inline-flex;
+	margin-top: 10px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: var(--blue-50);
+	color: var(--blue-700);
+	font-size: 11px;
+	font-weight: 600;
+}
+
+html.task-only-user .task-user-menu-divider {
+	height: 1px;
+	margin: 12px -14px 8px;
+	background: var(--border-color);
+}
+
+html.task-only-user .task-user-logout {
+	width: 100%;
+	padding: 7px 8px;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--red-600);
+	font-size: 13px;
+	font-weight: 500;
+	text-align: left;
+}
+
+html.task-only-user .task-user-logout:hover,
+html.task-only-user .task-user-logout:focus-visible {
+	background: var(--red-50);
+	outline: none;
+}
+
+html.task-only-user .sidebar-header .drop-icon {
+	display: none !important;
+}
+
+.login-language-switcher {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 3px;
+	width: 132px;
+	margin: -4px 0 18px auto;
+	padding: 3px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background: var(--subtle-fg);
+}
+
+.login-language-switcher button {
+	min-height: 28px;
+	padding: 3px 10px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-muted);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.login-language-switcher button.active {
+	background: var(--card-bg);
+	box-shadow: var(--shadow-xs);
+	color: var(--text-color);
+	font-weight: 600;
+}
+
+.login-language-switcher button:focus-visible {
+	outline: 2px solid var(--blue-400);
+	outline-offset: 1px;
+}
