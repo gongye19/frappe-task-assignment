@@ -356,18 +356,32 @@
 		}
 	};
 	const ensure_language_toggle = () => {
-		const sidebar_bottom = document.querySelector(".body-sidebar-bottom");
-		const user_button = sidebar_bottom?.querySelector(".sidebar-user-button");
-		if (!sidebar_bottom || !user_button) return;
+		const active_head = [...document.querySelectorAll(".page-head")].find(
+			(head) => head.offsetParent !== null
+		);
+		const page_actions = active_head?.querySelector(".page-actions");
+		document
+			.querySelectorAll(".task-language-switcher")
+			.forEach((item) => item.remove());
+		document.querySelectorAll(".task-language-toggle").forEach((item) => {
+			if (!active_head?.contains(item)) item.remove();
+		});
+		if (!page_actions) return;
 
-		sidebar_bottom.querySelectorAll(".task-language-switcher").forEach((item) => item.remove());
-		let button = sidebar_bottom.querySelector(".task-language-toggle");
+		let button = page_actions.querySelector(".task-language-toggle");
 		if (!button) {
 			button = document.createElement("button");
 			button.type = "button";
-			button.className = "task-language-toggle";
+			button.className = "btn btn-default btn-sm task-language-toggle";
 			button.addEventListener("click", () => switch_language(button));
-			sidebar_bottom.insertBefore(button, user_button.closest(".nav-item"));
+		}
+		const anchor =
+			page_actions.querySelector(":scope > .custom-actions") ||
+			page_actions.querySelector(":scope > .standard-actions");
+		if (anchor && button.nextElementSibling !== anchor) {
+			page_actions.insertBefore(button, anchor);
+		} else if (!anchor && button.parentElement !== page_actions) {
+			page_actions.append(button);
 		}
 		button.textContent = current_language === "en" ? "中文" : "English";
 		button.setAttribute("aria-label", __("Switch language"));
