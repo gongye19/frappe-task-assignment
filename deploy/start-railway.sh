@@ -3,6 +3,11 @@ set -Eeuo pipefail
 
 cd /home/frappe/frappe-bench
 
+if [[ "$(id -u)" == "0" ]]; then
+  chown -R frappe:frappe sites
+  exec setpriv --reuid=frappe --regid=frappe --init-groups "$0" "$@"
+fi
+
 SITE_NAME="${SITE_NAME:-task-assignment.local}"
 PORT="${PORT:-8080}"
 GUNICORN_WORKERS="${GUNICORN_WORKERS:-1}"
