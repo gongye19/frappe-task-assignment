@@ -78,6 +78,10 @@ else
   bench use "${SITE_NAME}"
 fi
 
+# Asset bundle names are cached in the shared Redis service. Refresh the
+# mapping after every image rollout so Frappe serves the baked UI assets.
+bench --site "${SITE_NAME}" clear-cache
+
 if [[ -n "${RAILWAY_PUBLIC_DOMAIN:-}" ]]; then
   bench --site "${SITE_NAME}" set-config host_name "https://${RAILWAY_PUBLIC_DOMAIN}"
 fi
