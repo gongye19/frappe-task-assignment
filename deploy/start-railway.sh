@@ -18,6 +18,11 @@ if [[ ! "${SITE_NAME}" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]]; then
   exit 1
 fi
 
+if [[ ! "${PORT}" =~ ^[0-9]+$ ]] || ((PORT < 1 || PORT > 65535)); then
+  echo "PORT must be a number between 1 and 65535, got: ${PORT}" >&2
+  exit 1
+fi
+
 required_variables=(
   MYSQLHOST
   MYSQLPORT
@@ -92,6 +97,16 @@ envsubst '${SITE_NAME} ${PORT}' \
   > /etc/nginx/conf.d/frappe.conf
 
 pids=()
+process_names=()
+
+start_process() {
+  local process_name="$1"
+  shift
+  echo "Starting ${process_name}..."
+  "$@" &
+  pids+=("$!")
+  process_names+=("${process_name}")
+}
 
 terminate() {
   trap - TERM INT EXIT
@@ -102,7 +117,7 @@ terminate() {
 }
 trap terminate TERM INT EXIT
 
-./env/bin/gunicorn \
+start_process "gunicorn" ./env/bin/gunicorn \
   --chdir=/home/frappe/frappe-bench/sites \
   --bind=127.0.0.1:8000 \
   --threads="${GUNICORN_THREADS}" \
@@ -111,20 +126,16 @@ trap terminate TERM INT EXIT
   --worker-tmp-dir=/dev/shm \
   --timeout=120 \
   --preload \
-  frappe.app:application &
-pids+=("$!")
+  frappe.app:application
 
-node apps/frappe/socketio.js &
-pids+=("$!")
+start_process "socket.io" node apps/frappe/socketio.js
 
-bench worker --queue short,default,long &
-pids+=("$!")
+start_process "worker" bench worker --queue short,default,long
 
-bench schedule &
-pids+=("$!")
+start_process "scheduler" bench schedule
 
-nginx -g 'daemon off;' &
-pids+=("$!")
+echo "Serving public HTTP traffic on 0.0.0.0:${PORT}"
+start_process "nginx" nginx -g 'daemon off;'
 
 # During a rolling deploy the retiring instance can briefly repopulate the
 # shared asset cache. Refresh once more after Railway has switched traffic.
@@ -133,4 +144,20 @@ pids+=("$!")
   bench --site "${SITE_NAME}" clear-cache
 ) &
 
+set +e
 wait -n "${pids[@]}"
+exit_status=$?
+set -e
+
+for index in "${!pids[@]}"; do
+  if ! kill -0 "${pids[$index]}" 2>/dev/null; then
+    echo "Critical process exited: ${process_names[$index]} (pid ${pids[$index]}, status ${exit_status})" >&2
+  fi
+done
+
+# Every tracked process is required to serve the application. Even a clean
+# child exit must restart the Railway service instead of leaving a partial app.
+if ((exit_status == 0)); then
+  exit_status=1
+fi
+exit "${exit_status}"

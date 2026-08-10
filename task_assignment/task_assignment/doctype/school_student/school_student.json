@@ -8,7 +8,6 @@
   "student_name",
   "user",
   "column_break_student",
-  "class_name",
   "status"
  ],
  "fields": [
@@ -32,12 +31,6 @@
   {
    "fieldname": "column_break_student",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "class_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Class"
   },
   {
    "default": "Enrolled",
@@ -82,7 +75,7 @@
    "write": 1
   }
  ],
- "search_fields": "student_name,user,class_name",
+ "search_fields": "student_name,user",
  "show_title_field_in_link": 1,
  "sort_field": "student_name",
  "sort_order": "ASC",

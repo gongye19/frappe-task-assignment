@@ -1,5 +1,6 @@
 frappe.listview_settings["School Student"] = {
 	hide_name_filter: true,
+	hide_name_column: true,
 	onload(listview) {
 		listview.page_length = 20;
 		listview.selected_page_count = 20;

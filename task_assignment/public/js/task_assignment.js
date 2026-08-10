@@ -478,7 +478,13 @@
 		unread_request = frappe.call({
 			method: "task_assignment.task_assignment.doctype.school_task.school_task.get_unread_tasks",
 		});
-		unread_request.then((response) => apply_unread_tasks(response.message));
+		unread_request.then(
+			(response) => apply_unread_tasks(response.message),
+			() => {
+				// Keep navigation usable during a brief network interruption. The
+				// unread count is refreshed again on the next route/list update.
+			}
+		);
 		unread_request.always(() => {
 			unread_request = null;
 		});

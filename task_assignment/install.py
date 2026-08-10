@@ -71,7 +71,6 @@ def setup_demo():
 				"doctype": "School Student",
 				"student_name": "林小满",
 				"user": "student@example.com",
-				"class_name": "示例班级",
 				"status": "Enrolled",
 			}
 		).insert(ignore_permissions=True)
