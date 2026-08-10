@@ -17,7 +17,9 @@ map $http_upgrade $connection_upgrade {
 }
 
 server {
-  listen ${PORT};
+  # Railway's edge reaches services over its dual-stack private mesh. Bind
+  # IPv6 and IPv4 on one socket instead of relying on IPv6-to-IPv4 fallback.
+  listen [::]:${PORT} ipv6only=off;
   server_name _;
   absolute_redirect off;
   root /home/frappe/frappe-bench/sites;

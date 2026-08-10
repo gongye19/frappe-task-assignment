@@ -134,7 +134,7 @@ start_process "worker" bench worker --queue short,default,long
 
 start_process "scheduler" bench schedule
 
-echo "Serving public HTTP traffic on 0.0.0.0:${PORT}"
+echo "Serving public HTTP traffic on [::]:${PORT} (IPv4/IPv6)"
 start_process "nginx" nginx -g 'daemon off;'
 
 # During a rolling deploy the retiring instance can briefly repopulate the
