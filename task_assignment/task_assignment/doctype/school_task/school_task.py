@@ -1,7 +1,6 @@
 from frappe.model.document import Document
-from frappe.utils import today
 
 
 class SchoolTask(Document):
-	def before_insert(self):
-		self.start_date = self.start_date or today()
+	def validate(self):
+		self.priority_rank = {"High": 3, "Medium": 2, "Low": 1}.get(self.priority, 0)

@@ -9,8 +9,9 @@ frappe.listview_settings["School Task"] = {
 		listview.selected_page_count = 20;
 		listview.page.page_form.addClass("compact-list-toolbar");
 		setup_status_filter(listview);
+		setup_priority_sort(listview);
 
-		const allowed_sort_fields = new Set(["modified", "due_date"]);
+		const allowed_sort_fields = new Set(["modified", "due_date", "priority"]);
 		listview.page.page_form.find(".sort-selector .option").each(function () {
 			if (!allowed_sort_fields.has(this.dataset.value)) {
 				this.closest("li")?.remove();
@@ -26,6 +27,17 @@ frappe.listview_settings["School Task"] = {
 		return [__(doc.status), colors[doc.status] || "grey", `status,=,${doc.status}`];
 	},
 };
+
+function setup_priority_sort(listview) {
+	const get_args = listview.get_args.bind(listview);
+	listview.get_args = () => {
+		const args = get_args();
+		if (listview.sort_selector.sort_by === "priority") {
+			args.order_by = args.order_by.replace("`priority`", "`priority_rank`");
+		}
+		return args;
+	};
+}
 
 function setup_status_filter(listview) {
 	if (listview.__task_status_filter_ready) return;

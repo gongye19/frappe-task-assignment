@@ -8,6 +8,8 @@
   "task_section",
   "task_title",
   "assigned_to",
+  "priority",
+  "priority_rank",
   "column_break_task",
   "start_date",
   "due_date",
@@ -37,6 +39,20 @@
    "label": "Assigned Student"
   },
   {
+   "default": "Medium",
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Priority",
+   "options": "High\nMedium\nLow"
+  },
+  {
+   "fieldname": "priority_rank",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Priority"
+  },
+  {
    "fieldname": "column_break_task",
    "fieldtype": "Column Break"
   },
@@ -44,8 +60,7 @@
    "fieldname": "start_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Start Date",
-   "read_only": 1
+   "label": "Start Date"
   },
   {
    "fieldname": "due_date",
@@ -109,7 +124,7 @@
    "write": 1
   }
  ],
- "search_fields": "task_title,assigned_to,start_date,status",
+ "search_fields": "priority,task_title,assigned_to,start_date,status",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
