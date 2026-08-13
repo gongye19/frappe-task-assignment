@@ -7,7 +7,7 @@
  "field_order": [
   "task_section",
   "task_title",
-  "project",
+  "assigned_to",
   "column_break_task",
   "due_date",
   "status",
@@ -28,11 +28,11 @@
    "label": "Task Title"
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
+   "fieldname": "assigned_to",
+   "fieldtype": "Data",
+   "in_global_search": 1,
    "in_list_view": 1,
-   "label": "Project",
-   "options": "School Project"
+   "label": "Assignee"
   },
   {
    "fieldname": "column_break_task",
@@ -54,8 +54,8 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Text Editor",
-   "label": "Instructions"
+   "fieldtype": "Small Text",
+   "label": "Task Content"
   },
   {
    "fieldname": "task_attachment",
@@ -96,7 +96,7 @@
    "write": 1
   }
  ],
- "search_fields": "task_title,project,status",
+ "search_fields": "task_title,assigned_to,status",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

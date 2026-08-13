@@ -1,15 +1,9 @@
 School Task,任务
 School Tasks,任务列表
-School Project,项目
-School Projects,项目列表
 Add School Task,添加任务
-Add School Project,添加项目
 Task Manager,任务管理
-Task Center,管理中台
 Task List,任务列表
-Project Directory,项目目录
 Tasks,任务
-Projects,项目
 Teacher,老师
 Current account,当前账号
 Log out,退出登录
@@ -18,16 +12,13 @@ Switch language,切换语言
 Switching language…,正在切换语言…
 Unable to switch language. Please try again.,无法切换语言，请重试。
 Back to tasks,返回任务列表
-Back to projects,返回项目列表
-Task Details,任务内容
+Task Details,任务
 Task Title,任务标题
-Project,所属项目
+Assignee,分配给
 Due Date,截止日期
 Status,状态
-Instructions,任务说明
+Task Content,任务内容
 Task Attachment,任务附件
-Project Name,项目名称
-Project Description,项目说明
 To Do,待办
 Completed,已完成
 Archived,已归档
@@ -43,7 +34,6 @@ Search this list,搜索当前列表
 Clear search,清空搜索
 Last Updated On,最后更新日期
 "No content contains “{0}”","没有找到包含“{0}”的内容"
-Manage tasks and projects in one place.,在一个地方管理任务和项目。
 Please log in before changing the language.,请先登录再切换语言。
 Unsupported language.,不支持该语言。
 Sign In,登录

@@ -49,19 +49,6 @@ def setup_demo():
 	teacher.add_roles("Teacher")
 	configure_task_only_user(teacher)
 
-	demo_project = frappe.db.get_value(
-		"School Project", {"project_name": "校园节筹备"}, "name"
-	)
-	if not demo_project:
-		demo_project = frappe.get_doc(
-			{
-				"doctype": "School Project",
-				"project_name": "校园节筹备",
-				"status": "Active",
-				"description": "校园节相关任务的示例项目。",
-			}
-		).insert(ignore_permissions=True).name
-
 	demo_task = frappe.db.get_value(
 		"School Task", {"task_title": "校园节活动方案"}, "name"
 	)
@@ -70,13 +57,13 @@ def setup_demo():
 			{
 				"doctype": "School Task",
 				"task_title": "校园节活动方案",
+				"assigned_to": "陈老师",
 				"due_date": add_days(today(), 3),
 				"description": "整理一页活动方案，记录主题、流程和人员分工。",
-				"project": demo_project,
 			}
 		).insert(ignore_permissions=True)
-	else:
-		frappe.db.set_value("School Task", demo_task, "project", demo_project)
+	elif not frappe.db.get_value("School Task", demo_task, "assigned_to"):
+		frappe.db.set_value("School Task", demo_task, "assigned_to", "陈老师")
 
 
 def configure_task_only_user(user):

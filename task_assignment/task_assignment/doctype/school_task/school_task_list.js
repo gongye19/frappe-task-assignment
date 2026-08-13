@@ -2,6 +2,7 @@ const TASK_STATUSES = ["To Do", "Completed", "Archived"];
 const DEFAULT_TASK_STATUSES = ["To Do", "Completed"];
 
 frappe.listview_settings["School Task"] = {
+	hide_name_column: true,
 	hide_name_filter: true,
 	onload(listview) {
 		listview.page_length = 20;

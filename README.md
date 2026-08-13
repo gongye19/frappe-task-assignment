@@ -7,7 +7,7 @@ A lightweight task manager for teachers, built directly on Frappe Desk with Chin
 ## 功能
 
 - 老师添加、编辑和删除任务。
-- 任务可归入项目，支持项目目录。
+- 每个任务可以记录分配对象。
 - 状态包括：待办、已完成、已归档。
 - 支持列表搜索、排序、附件和标签。
 - 登录页、管理中台、表单及列表均可切换中文 / English。
@@ -38,7 +38,6 @@ bench --site your-site set-config task_assignment_teacher_password 'choose-a-pas
 ## 数据模型
 
 - `School Task`：老师管理的任务。
-- `School Project`：任务所属项目。
 
 任务和项目状态在数据库中使用稳定的英文值，通过 Frappe 翻译表显示为中文。这使筛选和 API 不依赖当前界面语言。
 

@@ -14,7 +14,6 @@
 	const client_chinese_labels = {
 		"Task Assignment": "任务管理",
 		"New School Task": "新任务",
-		"New School Project": "新项目",
 		Task: "任务",
 		"Add Task": "添加任务",
 		Save: "保存",
@@ -22,7 +21,6 @@
 	const client_english_labels = {
 		"Task Assignment": "Task Manager",
 		"New School Task": "New Task",
-		"New School Project": "New Project",
 		"School Task": "Task",
 		"School Tasks": "Tasks",
 		"Add School Task": "Add Task",
@@ -35,22 +33,15 @@
 	let language_persist_chain = Promise.resolve();
 	const preferred_english_labels = [
 		"Task Manager",
-		"Task Center",
 		"Tasks",
-		"Projects",
 		"School Task",
-		"School Project",
 		"Add School Task",
-		"Add School Project",
 		"Task Title",
-		"Project",
+		"Assignee",
 		"Due Date",
 		"Status",
-		"ID",
-		"Instructions",
+		"Task Content",
 		"Task Attachment",
-		"Project Name",
-		"Project Description",
 		"To Do",
 		"Completed",
 		"Archived",
@@ -63,19 +54,15 @@
 		"Clear search",
 		"Last Updated On",
 		"Back to tasks",
-		"Back to projects",
 	];
 
 	const task_list_url = "/desk/school-task/view/list";
-	const directory_list_roots = ["/desk/school-task", "/desk/school-project"];
 	const is_list_path = (root) => {
 		const path = window.location.pathname.replace(/\/+$/, "");
 		return path === root || path.startsWith(`${root}/view/list`);
 	};
 	const allowed_paths = [
-		"/desk/task-center",
 		"/desk/school-task",
-		"/desk/school-project",
 		"/desk/file",
 	];
 	const is_allowed = (path) => allowed_paths.some((allowed) => path.startsWith(allowed));
@@ -410,9 +397,7 @@
 	};
 	const navigation_items = () => {
 		return [
-			{ path: "/desk/task-center", label: __("Task Center"), icon: "dashboard" },
 			{ path: "/desk/school-task", label: __("Tasks"), icon: "list-checks" },
-			{ path: "/desk/school-project", label: __("Projects"), icon: "folder" },
 		];
 	};
 	const is_active_navigation_path = (path) => {
@@ -509,10 +494,6 @@
 	};
 	const form_back_routes = {
 		"School Task": { path: "/desk/school-task/view/list", label: "Back to tasks" },
-		"School Project": {
-			path: "/desk/school-project/view/list",
-			label: "Back to projects",
-		},
 	};
 	const ensure_form_back_button = () => {
 		const route = frappe.get_route?.() || [];
@@ -677,12 +658,8 @@
 		apply_list_search(search);
 	};
 	const simplify_ui = () => {
-		const is_directory_list = directory_list_roots.some(is_list_path);
-		document.documentElement.classList.toggle("directory-list-page", is_directory_list);
-		document.documentElement.classList.toggle(
-			"school-task-list-page",
-			is_list_path("/desk/school-task")
-		);
+		const is_task_list = is_list_path("/desk/school-task");
+		document.documentElement.classList.toggle("school-task-list-page", is_task_list);
 		keep_only_logout();
 		keep_only_task_list_actions();
 		ensure_stable_sidebar_header();
@@ -690,7 +667,7 @@
 		ensure_language_toggle();
 		ensure_user_menu();
 		ensure_form_back_button();
-		if (is_directory_list) ensure_list_search();
+		if (is_task_list) ensure_list_search();
 		// Frappe can recreate native controls after a route or form refresh.
 		// Keep those controls in the selected language without reloading the page.
 		translate_visible_ui(current_language);
