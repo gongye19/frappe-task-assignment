@@ -11,6 +11,7 @@
   "column_break_task",
   "due_date",
   "status",
+  "content_section",
   "description",
   "task_attachment"
  ],
@@ -32,7 +33,7 @@
    "fieldtype": "Data",
    "in_global_search": 1,
    "in_list_view": 1,
-   "label": "Assignee"
+   "label": "Assigned Student"
   },
   {
    "fieldname": "column_break_task",
@@ -51,6 +52,10 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "To Do\nCompleted\nArchived"
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "description",

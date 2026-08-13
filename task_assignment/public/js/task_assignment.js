@@ -37,7 +37,7 @@
 		"School Task",
 		"Add School Task",
 		"Task Title",
-		"Assignee",
+		"Assigned Student",
 		"Due Date",
 		"Status",
 		"Task Content",

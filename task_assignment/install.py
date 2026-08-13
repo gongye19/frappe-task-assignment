@@ -22,6 +22,7 @@ def before_install():
 
 def after_install():
 	setup_demo()
+	configure_task_list()
 
 
 def setup_demo():
@@ -57,13 +58,13 @@ def setup_demo():
 			{
 				"doctype": "School Task",
 				"task_title": "校园节活动方案",
-				"assigned_to": "陈老师",
+				"assigned_to": "林小满",
 				"due_date": add_days(today(), 3),
 				"description": "整理一页活动方案，记录主题、流程和人员分工。",
 			}
 		).insert(ignore_permissions=True)
 	elif not frappe.db.get_value("School Task", demo_task, "assigned_to"):
-		frappe.db.set_value("School Task", demo_task, "assigned_to", "陈老师")
+		frappe.db.set_value("School Task", demo_task, "assigned_to", "林小满")
 
 
 def configure_task_only_user(user):
@@ -86,6 +87,19 @@ def configure_task_only_user(user):
 	)
 	user.set("block_modules", [{"module": module} for module in blocked_modules])
 	user.save(ignore_permissions=True)
+
+
+def configure_task_list():
+	if not frappe.db.exists("List View Settings", "School Task"):
+		frappe.get_doc(
+			{
+				"doctype": "List View Settings",
+				"name": "School Task",
+				"show_tags": 1,
+			}
+		).insert(ignore_permissions=True)
+	else:
+		frappe.db.set_value("List View Settings", "School Task", "show_tags", 1)
 
 
 def get_demo_password(environment_name):

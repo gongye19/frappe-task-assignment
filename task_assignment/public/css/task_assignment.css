@@ -219,6 +219,10 @@ html.task-only-user.school-task-list-page .frappe-list .list-row-col:not(.tag-co
 	flex: 1 1 0 !important;
 }
 
+html.task-only-user.school-task-list-page .frappe-list .tags-empty {
+	display: none;
+}
+
 html.task-only-user a[href^="/desk/user/"] {
 	pointer-events: none;
 	color: inherit;
