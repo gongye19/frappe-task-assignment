@@ -32,7 +32,6 @@ required_variables=(
   REDIS_URL
   ADMIN_PASSWORD
   TASK_ASSIGNMENT_TEACHER_PASSWORD
-  TASK_ASSIGNMENT_STUDENT_PASSWORD
 )
 
 for variable_name in "${required_variables[@]}"; do

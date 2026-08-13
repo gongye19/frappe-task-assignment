@@ -1,34 +1,26 @@
 app_name = "task_assignment"
-app_title = "Task Assignment"
+app_title = "Task Manager"
 app_publisher = "Local School"
-app_description = "Teacher-assigned tasks with submission and review"
+app_description = "A simple task manager for teachers"
 app_email = "admin@example.com"
 app_license = "mit"
 
 before_install = "task_assignment.install.before_install"
 after_install = "task_assignment.install.after_install"
-app_include_js = "/assets/task_assignment/js/task_assignment.js?v=33"
-app_include_css = "/assets/task_assignment/css/task_assignment.css?v=19"
+app_include_js = "/assets/task_assignment/js/task_assignment.js?v=34"
+app_include_css = "/assets/task_assignment/css/task_assignment.css?v=20"
 web_include_js = "/assets/task_assignment/js/login_language.js?v=2"
-web_include_css = "/assets/task_assignment/css/task_assignment.css?v=19"
+web_include_css = "/assets/task_assignment/css/task_assignment.css?v=20"
 
 add_to_apps_screen = [
 	{
 		"name": "task_assignment",
 		"logo": "/assets/task_assignment/task.svg",
-		"title": "Task Assignment",
+		"title": "Task Manager",
 		"route": "/desk/school-task/view/list",
 		"has_permission": "task_assignment.has_app_permission",
 	}
 ]
-
-permission_query_conditions = {
-	"School Task": "task_assignment.task_assignment.doctype.school_task.school_task.get_permission_query_conditions",
-}
-
-has_permission = {
-	"School Task": "task_assignment.task_assignment.doctype.school_task.school_task.has_permission",
-}
 
 # Apps
 # ------------------

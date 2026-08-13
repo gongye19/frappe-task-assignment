@@ -1,7 +1,6 @@
 (() => {
 	const roles = frappe.boot?.user?.roles || [];
-	if (!roles.some((role) => ["Teacher", "Student"].includes(role))) return;
-	const is_teacher = roles.some((role) => ["Teacher", "System Manager"].includes(role));
+	if (!roles.some((role) => ["Teacher", "System Manager"].includes(role))) return;
 	let current_language = (frappe.boot?.lang || frappe.boot?.user?.language || "en")
 		.toLocaleLowerCase()
 		.startsWith("zh")
@@ -29,77 +28,50 @@
 	let language_persist_timer = null;
 	let language_persist_chain = Promise.resolve();
 	const preferred_english_labels = [
-		"Task Assignment",
+		"Task Manager",
 		"Task Center",
 		"Tasks",
 		"Projects",
-		"Students",
 		"School Task",
 		"School Project",
-		"School Student",
 		"Add School Task",
 		"Add School Project",
-		"Add School Student",
 		"Task Title",
 		"Project",
-		"Assigned Student",
 		"Due Date",
 		"Status",
 		"ID",
-		"Published",
 		"Instructions",
 		"Task Attachment",
-		"Student Submission",
-		"Submission Note",
-		"Submission File",
-		"Teacher Review",
-		"Teacher Feedback",
-		"Assigned By",
 		"Project Name",
 		"Project Description",
-		"Student Name",
-		"Student Account",
-		"Class",
 		"To Do",
-		"Submitted",
 		"Completed",
 		"Archived",
 		"Active",
-		"Enrolled",
-		"Disabled",
-		"Draft",
 		"Save",
-		"Publish",
 		"Actions",
 		"Add Tags",
-		"Archive",
 		"Delete",
 		"Search this list",
 		"Clear search",
 		"Last Updated On",
 		"Back to tasks",
 		"Back to projects",
-		"Back to students",
 	];
 
 	const task_list_url = "/desk/school-task/view/list";
-	const directory_list_roots = [
-		"/desk/school-task",
-		"/desk/school-project",
-		"/desk/school-student",
-	];
+	const directory_list_roots = ["/desk/school-task", "/desk/school-project"];
 	const is_list_path = (root) => {
 		const path = window.location.pathname.replace(/\/+$/, "");
 		return path === root || path.startsWith(`${root}/view/list`);
 	};
-	const allowed_paths = ["/desk/school-task", "/desk/file"];
-	if (is_teacher) {
-		allowed_paths.push(
-			"/desk/task-center",
-			"/desk/school-project",
-			"/desk/school-student"
-		);
-	}
+	const allowed_paths = [
+		"/desk/task-center",
+		"/desk/school-task",
+		"/desk/school-project",
+		"/desk/file",
+	];
 	const is_allowed = (path) => allowed_paths.some((allowed) => path.startsWith(allowed));
 	const guard_route = () => {
 		const path = window.location.pathname.replace(/\/+$/, "");
@@ -163,7 +135,7 @@
 				frappe.boot?.user?.full_name ||
 				frappe.boot?.user?.first_name ||
 				frappe.session.user;
-			const role = is_teacher ? __("Teacher") : __("Student");
+			const role = __("Teacher");
 
 			menu = document.createElement("div");
 			menu.className = "task-user-menu";
@@ -417,10 +389,8 @@
 	const keep_only_task_list_actions = () => {
 		const allowed = new Set([
 			"Add Tags",
-			"Archive",
 			"Delete",
 			__("Add Tags"),
-			__("Archive"),
 			__("Delete"),
 		]);
 		document
@@ -432,75 +402,11 @@
 				if (!allowed.has(label)) item.closest("li")?.remove();
 			});
 	};
-	let unread_count = 0;
-	const apply_unread_tasks = (payload = {}) => {
-		const unread = new Set(payload.names || []);
-		const count = Number(payload.count || 0);
-		unread_count = count;
-		document
-			.querySelectorAll('.body-sidebar-top a[href^="/desk/school-task"]')
-			.forEach((link) => {
-				link.classList.add("task-nav-link");
-				let badge = link.querySelector(":scope > .task-unread-badge");
-				if (!badge) {
-					badge = document.createElement("span");
-					badge.className = "task-unread-badge";
-					link.append(badge);
-				}
-				badge.textContent = count > 99 ? "99+" : String(count);
-				badge.hidden = count === 0;
-				link.title = count ? __("{0} unread tasks", [count]) : "";
-			});
-
-		if (!is_list_path("/desk/school-task")) return;
-		const result = [...document.querySelectorAll(".list-view .frappe-list .result")].find(
-			(element) => element.offsetParent !== null
-		);
-		if (!result) return;
-		const rows = [...result.querySelectorAll(":scope > .list-row-container")].filter(
-			(row) => row.querySelector(".list-row-checkbox[data-name]")
-		);
-		rows.forEach((row) => {
-			const name = row.querySelector(".list-row-checkbox[data-name]")?.dataset.name;
-			row.classList.toggle("task-unread-row", unread.has(name));
-		});
-		rows
-			.sort(
-				(a, b) =>
-					Number(b.classList.contains("task-unread-row")) -
-					Number(a.classList.contains("task-unread-row"))
-			)
-			.forEach((row) => result.append(row));
-	};
-	let unread_request = null;
-	const refresh_unread_tasks = () => {
-		if (unread_request) return unread_request;
-		unread_request = frappe.call({
-			method: "task_assignment.task_assignment.doctype.school_task.school_task.get_unread_tasks",
-		});
-		unread_request.then(
-			(response) => apply_unread_tasks(response.message),
-			() => {
-				// Keep navigation usable during a brief network interruption. The
-				// unread count is refreshed again on the next route/list update.
-			}
-		);
-		unread_request.always(() => {
-			unread_request = null;
-		});
-		return unread_request;
-	};
-	window.task_assignment_refresh_unread = refresh_unread_tasks;
 	const navigation_items = () => {
-		const items = [
-			{ path: "/desk/school-task", label: __("Tasks"), icon: "list-checks" },
-		];
-		if (!is_teacher) return items;
 		return [
 			{ path: "/desk/task-center", label: __("Task Center"), icon: "dashboard" },
-			...items,
+			{ path: "/desk/school-task", label: __("Tasks"), icon: "list-checks" },
 			{ path: "/desk/school-project", label: __("Projects"), icon: "folder" },
-			{ path: "/desk/school-student", label: __("Students"), icon: "users" },
 		];
 	};
 	const is_active_navigation_path = (path) => {
@@ -540,15 +446,6 @@
 		text.textContent = label;
 		link.append(icon_container, text);
 
-		if (path === "/desk/school-task") {
-			link.classList.add("task-nav-link");
-			const badge = document.createElement("span");
-			badge.className = "task-unread-badge";
-			badge.textContent = unread_count > 99 ? "99+" : String(unread_count);
-			badge.hidden = unread_count === 0;
-			link.append(badge);
-		}
-
 		const control = document.createElement("div");
 		control.className = "sidebar-item-control";
 		link.append(control);
@@ -562,7 +459,6 @@
 		const items = navigation_items();
 		const signature = JSON.stringify({
 			language: current_language,
-			role: is_teacher ? "teacher" : "student",
 			paths: items.map((item) => item.path),
 		});
 		const managed_items = container.querySelectorAll(":scope > .task-managed-nav-item");
@@ -591,7 +487,7 @@
 		const title = header.querySelector(".header-title");
 		const subtitle = header.querySelector(".header-subtitle");
 		const logo = header.querySelector(".header-logo");
-		const app_title = __("Task Assignment");
+		const app_title = __("Task Manager");
 		if (title?.textContent.trim() !== app_title) title.textContent = app_title;
 		if (subtitle?.textContent.trim() !== frappe.session.user) {
 			subtitle.textContent = frappe.session.user;
@@ -610,10 +506,6 @@
 		"School Project": {
 			path: "/desk/school-project/view/list",
 			label: "Back to projects",
-		},
-		"School Student": {
-			path: "/desk/school-student/view/list",
-			label: "Back to students",
 		},
 	};
 	const ensure_form_back_button = () => {
@@ -828,7 +720,6 @@
 	const observer = new MutationObserver(schedule_simplify_ui);
 	observer.observe(document.documentElement, { childList: true, subtree: true });
 	simplify_ui();
-	setTimeout(refresh_unread_tasks, 0);
 	setTimeout(
 		() => load_language_messages(current_language === "en" ? "zh" : "en").catch(() => {}),
 		0
@@ -837,10 +728,7 @@
 	$(document).on("app_ready", () => {
 		frappe.router.on("change", () => {
 			setTimeout(() => {
-				if (!guard_route()) {
-					simplify_ui();
-					refresh_unread_tasks();
-				}
+				if (!guard_route()) simplify_ui();
 			}, 100);
 		});
 	});

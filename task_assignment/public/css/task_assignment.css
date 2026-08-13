@@ -10,7 +10,6 @@ html.task-only-user .page-actions .menu-more-button {
 	display: none !important;
 }
 
-html.task-only-user .page-actions .custom-actions:has(.task-publish-button),
 html.task-only-user .page-actions .custom-actions:has(.task-action-button) {
 	display: flex !important;
 }
@@ -218,35 +217,6 @@ html.task-only-user.school-task-list-page .frappe-list .list-row-col:not(.tag-co
 	width: 0 !important;
 	min-width: 0 !important;
 	flex: 1 1 0 !important;
-}
-
-html.task-only-user.school-task-list-page .frappe-list .task-unread-row .list-row > .level-left {
-	font-weight: 650;
-}
-
-html.task-only-user .task-nav-link {
-	display: flex !important;
-	align-items: center;
-}
-
-html.task-only-user .task-unread-badge {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 16px;
-	height: 16px;
-	margin-left: auto;
-	padding: 0 4px;
-	border-radius: 999px;
-	background: var(--blue-500);
-	color: white;
-	font-size: 9px;
-	font-weight: 700;
-	line-height: 1;
-}
-
-html.task-only-user .task-unread-badge[hidden] {
-	display: none !important;
 }
 
 html.task-only-user a[href^="/desk/user/"] {

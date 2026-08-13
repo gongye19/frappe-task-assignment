@@ -1,8 +1,7 @@
-const TASK_STATUSES = ["To Do", "Submitted", "Completed", "Archived"];
-const DEFAULT_TASK_STATUSES = ["To Do", "Submitted", "Completed"];
+const TASK_STATUSES = ["To Do", "Completed", "Archived"];
+const DEFAULT_TASK_STATUSES = ["To Do", "Completed"];
 
 frappe.listview_settings["School Task"] = {
-	add_fields: ["is_published"],
 	hide_name_filter: true,
 	onload(listview) {
 		listview.page_length = 20;
@@ -16,20 +15,10 @@ frappe.listview_settings["School Task"] = {
 				this.closest("li")?.remove();
 			}
 		});
-
-		const is_teacher =
-			frappe.session.user === "Administrator" ||
-			frappe.user.has_role(["Teacher", "System Manager"]);
-		if (!is_teacher) add_archive_action(listview);
-	},
-	refresh() {
-		window.task_assignment_refresh_unread?.();
 	},
 	get_indicator(doc) {
-		if (!doc.is_published) return [__("Draft"), "grey", "is_published,=,0"];
 		const colors = {
 			"To Do": "orange",
-			Submitted: "blue",
 			Completed: "green",
 			Archived: "grey",
 		};
@@ -120,26 +109,4 @@ function setup_status_filter(listview) {
 
 	filter.append(button, menu);
 	filter_section.prepend(filter);
-}
-
-function add_archive_action(listview) {
-	listview.page.add_actions_menu_item(__("Archive"), async () => {
-		const selected = listview.get_checked_items();
-		if (!selected.length) return;
-		if (selected.some((task) => task.status !== "Completed")) {
-			frappe.msgprint(__("Only completed tasks can be archived."));
-			return;
-		}
-
-		await frappe.call({
-			method: "task_assignment.task_assignment.doctype.school_task.school_task.archive_tasks",
-			args: { names: selected.map((task) => task.name) },
-			freeze: true,
-			freeze_message: __("Archiving task…"),
-		});
-		frappe.show_alert({ message: __("Task archived"), indicator: "green" });
-		listview.clear_checked_items();
-		listview.last_args = null;
-		listview.refresh();
-	}, true);
 }

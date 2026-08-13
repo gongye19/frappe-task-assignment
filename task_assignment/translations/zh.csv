@@ -1,22 +1,16 @@
 School Task,任务
 School Tasks,任务列表
-School Student,学生
-School Students,学生列表
 School Project,项目
 School Projects,项目列表
 Add School Task,添加任务
 Add School Project,添加项目
-Add School Student,添加学生
-Task Assignment,任务分配
+Task Manager,任务管理
 Task Center,管理中台
 Task List,任务列表
 Project Directory,项目目录
-Student Directory,学生目录
 Tasks,任务
 Projects,项目
-Students,学生
 Teacher,老师
-Student,学生
 Current account,当前账号
 Log out,退出登录
 Language,语言
@@ -25,64 +19,31 @@ Switching language…,正在切换语言…
 Unable to switch language. Please try again.,无法切换语言，请重试。
 Back to tasks,返回任务列表
 Back to projects,返回项目列表
-Back to students,返回学生列表
 Task Details,任务内容
 Task Title,任务标题
 Project,所属项目
-Assigned Student,指定学生
 Due Date,截止日期
 Status,状态
-Published,已发布
 Instructions,任务说明
 Task Attachment,任务附件
-Student Submission,学生提交
-Submission Note,提交说明
-Submission File,提交文件
-Teacher Review,老师验收
-Teacher Feedback,老师反馈
-Assigned By,发布老师
 Project Name,项目名称
 Project Description,项目说明
-Student Name,学生姓名
-Student Account,学生账号
-Class,班级
 To Do,待办
-Submitted,已提交
 Completed,已完成
 Archived,已归档
 Active,进行中
-Enrolled,在读
-Disabled,停用
-Draft,草稿
 Save,保存
-Publish,发布
 Actions,操作
 Add Tags,添加标签
-Archive,归档
 Delete,删除
 Tag,标签
 Add,添加
-Archiving task…,正在归档任务…
-Task archived,任务已归档
-Publishing task…,正在发布任务…
-Task published,任务已发布
 Tag added,标签已添加
 Search this list,搜索当前列表
 Clear search,清空搜索
 Last Updated On,最后更新日期
 "No content contains “{0}”","没有找到包含“{0}”的内容"
-{0} unread tasks,{0} 个未读任务
-"Open tasks, projects, or students to assign work, collect submissions, and complete reviews.",从任务、项目或学生进入，完成分派、提交和验收。
-Invalid task status.,任务状态无效。
-Tasks can only be assigned to students.,任务只能派发给学生账号。
-Students can only edit their submission.,学生只能编辑自己的提交内容。
-Completed or archived tasks can no longer be submitted.,已完成或已归档的任务不能再次提交。
-"Please complete these fields before publishing: {0}",请先填写后再发布：{0}
-Only teachers can publish tasks.,只有老师可以发布任务。
-Only completed tasks can be archived.,只有已完成的任务可以归档。
-You can only archive your own task.,只能归档分配给自己的任务。
-Please select at least one task.,请至少选择一个任务。
-Only accounts with the Student role can be added.,只能添加拥有学生角色的账号。
+Manage tasks and projects in one place.,在一个地方管理任务和项目。
 Please log in before changing the language.,请先登录再切换语言。
 Unsupported language.,不支持该语言。
 Sign In,登录

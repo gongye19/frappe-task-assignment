@@ -1,7 +1,7 @@
 {
  "app": "task_assignment",
  "charts": [],
- "content": "[{\"id\":\"task-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h2\\\">Task Center</span>\",\"col\":12}},{\"id\":\"task-help\",\"type\":\"paragraph\",\"data\":{\"text\":\"Open tasks, projects, or students to assign work, collect submissions, and complete reviews.\",\"col\":12}},{\"id\":\"task-list\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task List\",\"col\":4}},{\"id\":\"project-list\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Directory\",\"col\":4}},{\"id\":\"student-list\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Student Directory\",\"col\":4}}]",
+ "content": "[{\"id\":\"task-title\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h2\\\">Task Center</span>\",\"col\":12}},{\"id\":\"task-help\",\"type\":\"paragraph\",\"data\":{\"text\":\"Manage tasks and projects in one place.\",\"col\":12}},{\"id\":\"task-list\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task List\",\"col\":6}},{\"id\":\"project-list\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Directory\",\"col\":6}}]",
  "creation": "2026-08-08 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Task Center",
  "links": [],
- "modified": "2026-08-09 15:00:00.000000",
+ "modified": "2026-08-13 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Task Assignment",
  "name": "Task Center",
@@ -39,14 +39,6 @@
    "doc_view": "List",
    "label": "Project Directory",
    "link_to": "School Project",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "doc_view": "List",
-   "label": "Student Directory",
-   "link_to": "School Student",
    "stats_filter": "[]",
    "type": "DocType"
   }
