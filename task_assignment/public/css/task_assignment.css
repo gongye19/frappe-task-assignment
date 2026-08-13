@@ -221,15 +221,15 @@ html.task-only-user.school-task-list-page .frappe-list .list-row-col {
 }
 
 html.task-only-user.school-task-list-page .frappe-list [data-fieldname="priority"] {
-	order: 1;
+	order: 3;
 }
 
 html.task-only-user.school-task-list-page .frappe-list .list-subject {
-	order: 2;
+	order: 1;
 }
 
 html.task-only-user.school-task-list-page .frappe-list [data-fieldname="assigned_to"] {
-	order: 3;
+	order: 2;
 }
 
 html.task-only-user.school-task-list-page .frappe-list [data-fieldname="start_date"] {
@@ -242,6 +242,7 @@ html.task-only-user.school-task-list-page .frappe-list [data-fieldname="due_date
 
 html.task-only-user.school-task-list-page .frappe-list .tag-col {
 	order: 7;
+	flex: 0.55 1 0 !important;
 }
 
 html.task-only-user.school-task-list-page .frappe-list .tags-empty {
