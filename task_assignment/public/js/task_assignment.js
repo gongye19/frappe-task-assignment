@@ -12,11 +12,17 @@
 	};
 	const language_message_requests = {};
 	const client_chinese_labels = {
+		"Task Assignment": "任务管理",
+		"New School Task": "新任务",
+		"New School Project": "新项目",
 		Task: "任务",
 		"Add Task": "添加任务",
 		Save: "保存",
 	};
 	const client_english_labels = {
+		"Task Assignment": "Task Manager",
+		"New School Task": "New Task",
+		"New School Project": "New Project",
 		"School Task": "Task",
 		"School Tasks": "Tasks",
 		"Add School Task": "Add Task",
