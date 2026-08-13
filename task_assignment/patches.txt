@@ -11,3 +11,4 @@ task_assignment.patches.v1_3.use_english_as_demo_default
 task_assignment.patches.v1_4.remove_student_workflow
 task_assignment.patches.v1_5.restore_simple_assignee
 task_assignment.patches.v1_6.clarify_student_assignee
+task_assignment.patches.v1_7.set_task_start_dates

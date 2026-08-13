@@ -213,10 +213,31 @@ html.task-only-user.school-task-list-page .frappe-list .list-row > .level-left {
 	flex: 1 1 100% !important;
 }
 
-html.task-only-user.school-task-list-page .frappe-list .list-row-col:not(.tag-col) {
+html.task-only-user.school-task-list-page .frappe-list .list-row-col {
 	width: 0 !important;
 	min-width: 0 !important;
 	flex: 1 1 0 !important;
+	order: 5;
+}
+
+html.task-only-user.school-task-list-page .frappe-list .list-subject {
+	order: 1;
+}
+
+html.task-only-user.school-task-list-page .frappe-list [data-fieldname="assigned_to"] {
+	order: 2;
+}
+
+html.task-only-user.school-task-list-page .frappe-list [data-fieldname="start_date"] {
+	order: 3;
+}
+
+html.task-only-user.school-task-list-page .frappe-list [data-fieldname="due_date"] {
+	order: 4;
+}
+
+html.task-only-user.school-task-list-page .frappe-list .tag-col {
+	order: 6;
 }
 
 html.task-only-user.school-task-list-page .frappe-list .tags-empty {

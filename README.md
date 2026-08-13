@@ -8,6 +8,7 @@ A lightweight task manager for teachers, built directly on Frappe Desk with Chin
 
 - 老师添加、编辑和删除任务。
 - 每个任务可以记录分配给哪位学生，无需学生登录。
+- 首次保存任务时自动记录开始日期。
 - 状态包括：待办、已完成、已归档。
 - 支持列表搜索、排序、附件和标签。
 - 登录页、管理中台、表单及列表均可切换中文 / English。

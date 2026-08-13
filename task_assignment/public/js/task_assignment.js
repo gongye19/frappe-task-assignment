@@ -38,6 +38,7 @@
 		"Add School Task",
 		"Task Title",
 		"Assigned Student",
+		"Start Date",
 		"Due Date",
 		"Status",
 		"Task Content",

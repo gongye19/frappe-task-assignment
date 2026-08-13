@@ -7,10 +7,10 @@ app_license = "mit"
 
 before_install = "task_assignment.install.before_install"
 after_install = "task_assignment.install.after_install"
-app_include_js = "/assets/task_assignment/js/task_assignment.js?v=37"
-app_include_css = "/assets/task_assignment/css/task_assignment.css?v=22"
+app_include_js = "/assets/task_assignment/js/task_assignment.js?v=38"
+app_include_css = "/assets/task_assignment/css/task_assignment.css?v=23"
 web_include_js = "/assets/task_assignment/js/login_language.js?v=2"
-web_include_css = "/assets/task_assignment/css/task_assignment.css?v=22"
+web_include_css = "/assets/task_assignment/css/task_assignment.css?v=23"
 
 add_to_apps_screen = [
 	{

@@ -9,6 +9,7 @@
   "task_title",
   "assigned_to",
   "column_break_task",
+  "start_date",
   "due_date",
   "status",
   "content_section",
@@ -38,6 +39,13 @@
   {
    "fieldname": "column_break_task",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date",
+   "read_only": 1
   },
   {
    "fieldname": "due_date",
@@ -101,7 +109,7 @@
    "write": 1
   }
  ],
- "search_fields": "task_title,assigned_to,status",
+ "search_fields": "task_title,assigned_to,start_date,status",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
