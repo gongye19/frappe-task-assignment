@@ -220,6 +220,58 @@ html.task-only-user.school-task-list-page .frappe-list .list-row-col {
 	order: 6;
 }
 
+html.task-only-user.school-task-list-page .frappe-list .task-resizable-column {
+	position: relative;
+	width: 0 !important;
+	min-width: 72px !important;
+	flex: var(--task-column-width, 1) 1 0 !important;
+}
+
+html.task-only-user.school-task-list-page
+	.frappe-list
+	.list-row-head
+	.task-resizable-column {
+	overflow: visible;
+}
+
+html.task-only-user.school-task-list-page .task-column-resizer {
+	position: absolute;
+	top: 0;
+	right: -5px;
+	z-index: 3;
+	display: block;
+	width: 10px;
+	height: 100%;
+	cursor: col-resize;
+	touch-action: none;
+}
+
+html.task-only-user.school-task-list-page .task-column-resizer::after {
+	position: absolute;
+	top: 7px;
+	bottom: 7px;
+	left: 4px;
+	width: 1px;
+	background: transparent;
+	content: "";
+}
+
+html.task-only-user.school-task-list-page .task-column-resizer:hover::after,
+html.task-only-user.school-task-list-page .task-column-resizer:focus-visible::after,
+html.task-column-resizing .task-column-resizer::after {
+	background: var(--blue-400);
+}
+
+html.task-only-user.school-task-list-page .task-column-resizer:focus-visible {
+	outline: none;
+}
+
+html.task-column-resizing,
+html.task-column-resizing * {
+	cursor: col-resize !important;
+	user-select: none !important;
+}
+
 html.task-only-user.school-task-list-page .frappe-list [data-fieldname="priority"] {
 	order: 3;
 }
@@ -242,7 +294,6 @@ html.task-only-user.school-task-list-page .frappe-list [data-fieldname="due_date
 
 html.task-only-user.school-task-list-page .frappe-list .tag-col {
 	order: 7;
-	flex: 0.55 1 0 !important;
 }
 
 html.task-only-user.school-task-list-page .frappe-list .tags-empty {

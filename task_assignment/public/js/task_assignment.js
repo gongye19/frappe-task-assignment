@@ -59,9 +59,35 @@
 		"Clear search",
 		"Last Updated On",
 		"Back to tasks",
+		"Resize column",
+		"Drag to resize columns; double-click to reset",
 	];
 
 	const task_list_url = "/desk/school-task/view/list";
+	const task_column_storage_key = "task-list-column-widths";
+	const task_columns = [
+		{ key: "task_title", selector: '[data-fieldname="task_title"]' },
+		{ key: "assigned_to", selector: '[data-fieldname="assigned_to"]' },
+		{ key: "priority", selector: '[data-fieldname="priority"]' },
+		{ key: "start_date", selector: '[data-fieldname="start_date"]' },
+		{ key: "due_date", selector: '[data-fieldname="due_date"]' },
+		{ key: "status", selector: ".tag-col + .list-row-col" },
+		{ key: "tag", selector: ".tag-col" },
+	];
+	const load_task_column_widths = () => {
+		try {
+			const widths = JSON.parse(localStorage.getItem(task_column_storage_key));
+			if (
+				Array.isArray(widths) &&
+				widths.length === task_columns.length &&
+				widths.every((width) => Number.isFinite(width) && width > 0)
+			) {
+				return widths;
+			}
+		} catch {}
+		return task_columns.map(() => 1);
+	};
+	let task_column_widths = load_task_column_widths();
 	const is_list_path = (root) => {
 		const path = window.location.pathname.replace(/\/+$/, "");
 		return path === root || path.startsWith(`${root}/view/list`);
@@ -662,6 +688,105 @@
 		}
 		apply_list_search(search);
 	};
+	const task_column_cells = (row) =>
+		task_columns.map(({ selector }) => row.querySelector(`:scope > ${selector}`));
+	const apply_task_column_widths = (widths, persist = false) => {
+		const total = widths.reduce((sum, width) => sum + width, 0);
+		task_column_widths = widths.map(
+			(width) => (width / total) * task_columns.length
+		);
+		document
+			.querySelectorAll(
+				".school-task-list-page .frappe-list .list-row-head > .level-left, " +
+					".school-task-list-page .frappe-list .list-row > .level-left"
+			)
+			.forEach((row) => {
+				task_column_cells(row).forEach((cell, index) => {
+					if (!cell) return;
+					cell.classList.add("task-resizable-column");
+					cell.dataset.taskColumn = task_columns[index].key;
+					cell.style.setProperty("--task-column-width", task_column_widths[index]);
+				});
+			});
+		if (!persist) return;
+		try {
+			localStorage.setItem(task_column_storage_key, JSON.stringify(task_column_widths));
+		} catch {}
+	};
+	const resize_task_column_pair = (index, delta, persist = false) => {
+		const header = document.querySelector(
+			".school-task-list-page .frappe-list .list-row-head > .level-left"
+		);
+		if (!header) return;
+		const widths = task_column_cells(header).map(
+			(cell) => cell?.getBoundingClientRect().width || 0
+		);
+		const min_width = 72;
+		const safe_delta = Math.max(
+			min_width - widths[index],
+			Math.min(delta, widths[index + 1] - min_width)
+		);
+		widths[index] += safe_delta;
+		widths[index + 1] -= safe_delta;
+		apply_task_column_widths(widths, persist);
+	};
+	const start_task_column_resize = (event, index) => {
+		event.preventDefault();
+		event.stopPropagation();
+		const start_x = event.clientX;
+		let previous_x = start_x;
+		document.documentElement.classList.add("task-column-resizing");
+		const move = (move_event) => {
+			resize_task_column_pair(index, move_event.clientX - previous_x);
+			previous_x = move_event.clientX;
+		};
+		const stop = () => {
+			window.removeEventListener("pointermove", move);
+			window.removeEventListener("pointerup", stop);
+			window.removeEventListener("pointercancel", stop);
+			document.documentElement.classList.remove("task-column-resizing");
+			apply_task_column_widths(task_column_widths, true);
+		};
+		window.addEventListener("pointermove", move);
+		window.addEventListener("pointerup", stop);
+		window.addEventListener("pointercancel", stop);
+	};
+	const ensure_resizable_task_columns = () => {
+		const header = document.querySelector(
+			".school-task-list-page .frappe-list .list-row-head > .level-left"
+		);
+		if (!header) return;
+		const cells = task_column_cells(header);
+		apply_task_column_widths(task_column_widths);
+		cells.slice(0, -1).forEach((cell, index) => {
+			if (!cell || cell.querySelector(":scope > .task-column-resizer")) return;
+			const handle = document.createElement("span");
+			handle.className = "task-column-resizer";
+			handle.tabIndex = 0;
+			handle.setAttribute("role", "separator");
+			handle.setAttribute("aria-orientation", "vertical");
+			handle.setAttribute("aria-label", __("Resize column"));
+			handle.title = __("Drag to resize columns; double-click to reset");
+			handle.addEventListener("pointerdown", (event) =>
+				start_task_column_resize(event, index)
+			);
+			handle.addEventListener("click", (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+			});
+			handle.addEventListener("dblclick", (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				apply_task_column_widths(task_columns.map(() => 1), true);
+			});
+			handle.addEventListener("keydown", (event) => {
+				if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+				event.preventDefault();
+				resize_task_column_pair(index, event.key === "ArrowRight" ? 12 : -12, true);
+			});
+			cell.append(handle);
+		});
+	};
 	const simplify_ui = () => {
 		const is_task_list = is_list_path("/desk/school-task");
 		document.documentElement.classList.toggle("school-task-list-page", is_task_list);
@@ -672,7 +797,10 @@
 		ensure_language_toggle();
 		ensure_user_menu();
 		ensure_form_back_button();
-		if (is_task_list) ensure_list_search();
+		if (is_task_list) {
+			ensure_list_search();
+			ensure_resizable_task_columns();
+		}
 		// Frappe can recreate native controls after a route or form refresh.
 		// Keep those controls in the selected language without reloading the page.
 		translate_visible_ui(current_language);
