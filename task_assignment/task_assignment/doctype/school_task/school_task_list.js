@@ -19,6 +19,9 @@ frappe.listview_settings["School Task"] = {
 			}
 		});
 	},
+	refresh(listview) {
+		center_empty_state(listview);
+	},
 	get_indicator(doc) {
 		const colors = {
 			"To Do": "orange",
@@ -28,6 +31,15 @@ frappe.listview_settings["School Task"] = {
 		return [__(doc.status), colors[doc.status] || "grey", `status,=,${doc.status}`];
 	},
 };
+
+function center_empty_state(listview) {
+	if (listview.data.length) return;
+	const empty = listview.$no_result?.[0];
+	if (!empty) return;
+	const top = Math.max(0, Math.round(empty.getBoundingClientRect().top));
+	empty.style.display = "flex";
+	empty.style.height = `calc(100dvh - ${top}px)`;
+}
 
 function setup_initial_loading_state(listview) {
 	const list = listview.$frappe_list;
