@@ -11,12 +11,12 @@ app_include_js = [
 	"/assets/task_assignment/js/pwa.js?v=1",
 	"/assets/task_assignment/js/task_assignment.js?v=42",
 ]
-app_include_css = "/assets/task_assignment/css/task_assignment.css?v=28"
+app_include_css = "/assets/task_assignment/css/task_assignment.css?v=29"
 web_include_js = [
 	"/assets/task_assignment/js/pwa.js?v=1",
 	"/assets/task_assignment/js/login_language.js?v=2",
 ]
-web_include_css = "/assets/task_assignment/css/task_assignment.css?v=28"
+web_include_css = "/assets/task_assignment/css/task_assignment.css?v=29"
 
 add_to_apps_screen = [
 	{

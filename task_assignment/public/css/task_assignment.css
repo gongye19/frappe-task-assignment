@@ -300,6 +300,10 @@ html.task-only-user.school-task-list-page .frappe-list .tags-empty {
 	display: none;
 }
 
+html.task-only-user.school-task-list-page .frappe-list > .no-result .msg-box {
+	margin-bottom: 0;
+}
+
 html.task-only-user.school-task-list-page .frappe-list.task-list-loading .result-container,
 html.task-only-user.school-task-list-page .frappe-list.task-list-loading .no-result,
 html.task-only-user.school-task-list-page .frappe-list.task-list-loading .list-paging-area {
