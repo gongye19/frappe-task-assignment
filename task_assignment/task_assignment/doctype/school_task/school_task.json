@@ -15,8 +15,7 @@
   "due_date",
   "status",
   "content_section",
-  "description",
-  "task_attachment"
+  "description"
  ],
  "fields": [
   {
@@ -84,11 +83,6 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Task Content"
-  },
-  {
-   "fieldname": "task_attachment",
-   "fieldtype": "Attach",
-   "label": "Task Attachment"
   }
  ],
  "hide_toolbar": 1,

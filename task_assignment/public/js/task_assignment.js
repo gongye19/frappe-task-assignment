@@ -46,7 +46,6 @@
 		"Due Date",
 		"Status",
 		"Task Content",
-		"Task Attachment",
 		"To Do",
 		"Completed",
 		"Archived",
@@ -64,7 +63,7 @@
 	];
 
 	const task_list_url = "/desk/school-task/view/list";
-	const task_column_storage_key = "task-list-column-widths";
+	const task_column_storage_key = "task-list-column-widths-v2";
 	const task_columns = [
 		{ key: "task_title", selector: '[data-fieldname="task_title"]' },
 		{ key: "assigned_to", selector: '[data-fieldname="assigned_to"]' },
@@ -74,6 +73,7 @@
 		{ key: "status", selector: ".tag-col + .list-row-col" },
 		{ key: "tag", selector: ".tag-col" },
 	];
+	const task_column_default_widths = [1.8, 1.25, 0.9, 1, 1, 0.9, 0.7];
 	const load_task_column_widths = () => {
 		try {
 			const widths = JSON.parse(localStorage.getItem(task_column_storage_key));
@@ -85,7 +85,7 @@
 				return widths;
 			}
 		} catch {}
-		return task_columns.map(() => 1);
+		return [...task_column_default_widths];
 	};
 	let task_column_widths = load_task_column_widths();
 	const is_list_path = (root) => {
@@ -777,7 +777,7 @@
 			handle.addEventListener("dblclick", (event) => {
 				event.preventDefault();
 				event.stopPropagation();
-				apply_task_column_widths(task_columns.map(() => 1), true);
+				apply_task_column_widths(task_column_default_widths, true);
 			});
 			handle.addEventListener("keydown", (event) => {
 				if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;

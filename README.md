@@ -11,7 +11,7 @@ A lightweight task manager for teachers, built directly on Frappe Desk with Chin
 - 开始日期和截止日期由老师填写。
 - 任务支持高、中、低优先级。
 - 状态包括：待办、已完成、已归档。
-- 支持列表搜索、排序、附件和标签。
+- 支持列表搜索、排序和标签。
 - 登录页、管理中台、表单及列表均可切换中文 / English。
 
 ## 安装
