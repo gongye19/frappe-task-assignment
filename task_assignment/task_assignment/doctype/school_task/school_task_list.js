@@ -8,6 +8,7 @@ frappe.listview_settings["School Task"] = {
 		listview.page_length = 20;
 		listview.selected_page_count = 20;
 		listview.page.page_form.addClass("compact-list-toolbar");
+		setup_initial_loading_state(listview);
 		setup_status_filter(listview);
 		setup_priority_sort(listview);
 
@@ -27,6 +28,25 @@ frappe.listview_settings["School Task"] = {
 		return [__(doc.status), colors[doc.status] || "grey", `status,=,${doc.status}`];
 	},
 };
+
+function setup_initial_loading_state(listview) {
+	const list = listview.$frappe_list;
+	const loading = $(
+		`<div class="task-list-initial-loader text-muted" role="status">${__("Loading")}...</div>`
+	).appendTo(list);
+	const refresh = listview.refresh;
+	let first_refresh = true;
+
+	list.addClass("task-list-loading");
+	listview.refresh = (...args) => {
+		if (!first_refresh) return refresh(...args);
+		first_refresh = false;
+		return Promise.resolve(refresh(...args)).finally(() => {
+			list.removeClass("task-list-loading");
+			loading.remove();
+		});
+	};
+}
 
 function setup_priority_sort(listview) {
 	const get_args = listview.get_args.bind(listview);

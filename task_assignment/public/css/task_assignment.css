@@ -300,6 +300,43 @@ html.task-only-user.school-task-list-page .frappe-list .tags-empty {
 	display: none;
 }
 
+html.task-only-user.school-task-list-page .frappe-list.task-list-loading .result-container,
+html.task-only-user.school-task-list-page .frappe-list.task-list-loading .no-result,
+html.task-only-user.school-task-list-page .frappe-list.task-list-loading .list-paging-area {
+	display: none !important;
+}
+
+html.task-only-user.school-task-list-page .task-list-initial-loader {
+	display: flex;
+	min-height: 180px;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-size: 13px;
+}
+
+html.task-only-user.school-task-list-page .task-list-initial-loader::before {
+	width: 16px;
+	height: 16px;
+	border: 2px solid var(--border-color);
+	border-top-color: var(--blue-500);
+	border-radius: 50%;
+	content: "";
+	animation: task-list-loading-spin 0.7s linear infinite;
+}
+
+@keyframes task-list-loading-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.task-only-user.school-task-list-page .task-list-initial-loader::before {
+		animation: none;
+	}
+}
+
 html.task-only-user a[href^="/desk/user/"] {
 	pointer-events: none;
 	color: inherit;
