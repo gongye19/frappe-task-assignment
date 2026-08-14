@@ -13,3 +13,4 @@ task_assignment.patches.v1_5.restore_simple_assignee
 task_assignment.patches.v1_6.clarify_student_assignee
 task_assignment.patches.v1_7.set_task_start_dates
 task_assignment.patches.v1_8.set_task_priorities
+task_assignment.patches.v1_9.disable_password_policy

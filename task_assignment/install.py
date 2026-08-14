@@ -29,6 +29,8 @@ def setup_demo():
 	before_install()
 	frappe.db.set_default("desktop:home_page", "workspace")
 	frappe.db.set_single_value("System Settings", "login_with_email_link", 0)
+	frappe.db.set_single_value("System Settings", "enable_password_policy", 0)
+	frappe.db.set_single_value("System Settings", "minimum_password_score", "")
 	frappe.db.set_single_value("Website Settings", "disable_signup", 1)
 	frappe.db.set_value(
 		"User", "Administrator", {"language": "en", "default_app": "task_assignment"}

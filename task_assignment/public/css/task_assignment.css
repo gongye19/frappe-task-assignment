@@ -461,16 +461,30 @@ html.task-only-user .task-user-menu-divider {
 	background: var(--border-color);
 }
 
+html.task-only-user .task-user-change-password,
 html.task-only-user .task-user-logout {
 	width: 100%;
 	padding: 7px 8px;
 	border: 0;
 	border-radius: 7px;
 	background: transparent;
-	color: var(--red-600);
 	font-size: 13px;
 	font-weight: 500;
 	text-align: left;
+}
+
+html.task-only-user .task-user-change-password {
+	color: var(--text-color);
+}
+
+html.task-only-user .task-user-change-password:hover,
+html.task-only-user .task-user-change-password:focus-visible {
+	background: var(--subtle-fg);
+	outline: none;
+}
+
+html.task-only-user .task-user-logout {
+	color: var(--red-600);
 }
 
 html.task-only-user .task-user-logout:hover,

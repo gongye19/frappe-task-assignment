@@ -7,6 +7,12 @@ Tasks,任务
 Teacher,老师
 Current account,当前账号
 Log out,退出登录
+Change password,修改密码
+Current password,当前密码
+New password,新密码
+Confirm password,确认密码
+Passwords do not match,两次输入的密码不一致
+Password changed,密码已修改
 Language,语言
 Switch language,切换语言
 Switching language…,正在切换语言…

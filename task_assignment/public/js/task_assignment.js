@@ -60,6 +60,12 @@
 		"Back to tasks",
 		"Resize column",
 		"Drag to resize columns; double-click to reset",
+		"Change password",
+		"Current password",
+		"New password",
+		"Confirm password",
+		"Passwords do not match",
+		"Password changed",
 	];
 
 	const task_list_url = "/desk/school-task/view/list";
@@ -145,6 +151,50 @@
 			if (logout) items.forEach((item) => item !== logout && item.remove());
 		});
 	};
+	const show_change_password_dialog = () => {
+		const dialog = new frappe.ui.Dialog({
+			title: __("Change password"),
+			fields: [
+				{
+					fieldtype: "Password",
+					fieldname: "old_password",
+					label: __("Current password"),
+					reqd: 1,
+				},
+				{
+					fieldtype: "Password",
+					fieldname: "new_password",
+					label: __("New password"),
+					reqd: 1,
+				},
+				{
+					fieldtype: "Password",
+					fieldname: "confirm_password",
+					label: __("Confirm password"),
+					reqd: 1,
+				},
+			],
+			primary_action_label: __("Change password"),
+			async primary_action(values) {
+				if (values.new_password !== values.confirm_password) {
+					frappe.msgprint(__("Passwords do not match"));
+					return;
+				}
+				await frappe.call({
+					method: "frappe.core.doctype.user.user.update_password",
+					args: {
+						old_password: values.old_password,
+						new_password: values.new_password,
+						logout_all_sessions: 0,
+					},
+					freeze: true,
+				});
+				dialog.hide();
+				frappe.show_alert({ message: __("Password changed"), indicator: "green" });
+			},
+		});
+		dialog.show();
+	};
 	const ensure_user_menu = () => {
 		const sidebar_bottom = document.querySelector(".body-sidebar-bottom");
 		const user_button = sidebar_bottom?.querySelector(".sidebar-user-button");
@@ -185,6 +235,17 @@
 			const divider = document.createElement("div");
 			divider.className = "task-user-menu-divider";
 
+			const change_password = document.createElement("button");
+			change_password.type = "button";
+			change_password.className = "task-user-change-password";
+			change_password.textContent = __("Change password");
+			change_password.setAttribute("role", "menuitem");
+			change_password.addEventListener("click", () => {
+				menu.hidden = true;
+				user_button.setAttribute("aria-expanded", "false");
+				show_change_password_dialog();
+			});
+
 			const logout = document.createElement("button");
 			logout.type = "button";
 			logout.className = "task-user-logout";
@@ -192,7 +253,7 @@
 			logout.setAttribute("role", "menuitem");
 			logout.addEventListener("click", () => frappe.app.logout());
 
-			menu.append(heading, name, email, role_badge, divider, logout);
+			menu.append(heading, name, email, role_badge, divider, change_password, logout);
 			sidebar_bottom.prepend(menu);
 		}
 
