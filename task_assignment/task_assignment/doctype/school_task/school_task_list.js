@@ -9,6 +9,7 @@ frappe.listview_settings["School Task"] = {
 		listview.selected_page_count = 20;
 		listview.page.page_form.addClass("compact-list-toolbar");
 		setup_initial_loading_state(listview);
+		setup_auto_clear_selection(listview);
 		setup_status_filter(listview);
 		setup_priority_sort(listview);
 
@@ -31,6 +32,19 @@ frappe.listview_settings["School Task"] = {
 		return [__(doc.status), colors[doc.status] || "grey", `status,=,${doc.status}`];
 	},
 };
+
+function setup_auto_clear_selection(listview) {
+	$(document)
+		.off("click.task-auto-clear-selection")
+		.on("click.task-auto-clear-selection", (event) => {
+			if (frappe.get_route_str() !== listview.page_name) return;
+			if (!listview.get_checked_items(true).length) return;
+			if ($(event.target).closest("input[type=checkbox], .actions-btn-group, .modal").length) {
+				return;
+			}
+			listview.clear_checked_items();
+		});
+}
 
 function center_empty_state(listview) {
 	if (listview.data.length) return;
