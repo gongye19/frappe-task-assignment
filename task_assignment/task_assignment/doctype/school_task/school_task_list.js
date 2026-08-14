@@ -20,7 +20,7 @@ frappe.listview_settings["School Task"] = {
 		});
 	},
 	refresh(listview) {
-		center_empty_state(listview);
+		window.requestAnimationFrame(() => center_empty_state(listview));
 	},
 	get_indicator(doc) {
 		const colors = {
@@ -35,7 +35,7 @@ frappe.listview_settings["School Task"] = {
 function center_empty_state(listview) {
 	if (listview.data.length) return;
 	const empty = listview.$no_result?.[0];
-	if (!empty) return;
+	if (!empty?.isConnected) return;
 	const top = Math.max(0, Math.round(empty.getBoundingClientRect().top));
 	empty.style.display = "flex";
 	empty.style.height = `calc(100dvh - ${top}px)`;
